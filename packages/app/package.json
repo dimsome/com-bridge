@@ -1,9 +1,9 @@
 {
-  "name": "packs-app",
+  "name": "com-frontend",
   "version": "0.0.1",
-  "description": "Packs App",
+  "description": "We CoM together",
   "main": "index.js",
-  "author": "PACKD",
+  "author": "CoM",
   "license": "MIT",
   "scripts": {
     "dev": "next dev",
