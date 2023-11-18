@@ -1,6 +1,10 @@
 import { Chain } from "./network";
 
-export const contractNames = ["CrossChainSwapper", "CCIP_Router"] as const;
+export const contractNames = [
+  "CrossChainSwapper",
+  "CCIP_Router",
+  "CCIP_ChainSelector",
+] as const;
 export type ContractNames = (typeof contractNames)[number];
 
 export const resolveNamedAddress = (
@@ -19,7 +23,7 @@ export const resolveNamedAddress = (
   } else if (chain === Chain.sepolia) {
     switch (contractName) {
       case "CrossChainSwapper":
-        return "0x035CC09B3Fc67f97dd5A0024cfb290CD766f9A33";
+        return "0x29074D3F45503D954209Af19439c4Dc2520EED65";
       case "CCIP_Router":
         return "0xd0daae2231e9cb96b94c8512223533293c3693bf";
       default:

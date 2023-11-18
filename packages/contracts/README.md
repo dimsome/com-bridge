@@ -46,6 +46,8 @@ yarn task ccs-deploy --network sepolia
 yarn task token-approve --token Meow --spender CrossChainSwapper --network sepolia
 # Deposit Meow tokens into the CrossChainSwapper
 yarn task ccs-deposit --amount 10 --token Meow --network sepolia
+# Maker creates a swap
+yarn task ccs-make-swap --amount 8 --token Meow --network sepolia
 
 # Meow token on Avalanche Fuji
 yarn task token-deploy --name meow --symbol meow --decimals 18  --network testnet

@@ -10,6 +10,7 @@ import { Chain, getChain } from "../utils/network";
 import { fMeow, sMeow } from "../utils/tokens";
 import { resolveNamedAddress } from "../utils/namedAddress";
 import { resolveAssetToken } from "../utils/resolvers";
+import { parse } from "path";
 
 const log = logger("task:ccs");
 
@@ -44,6 +45,44 @@ subtask("ccs-deposit", "Deposits Meow in the Cross Chain Swapper contract")
     );
   });
 task("ccs-deposit").setAction(async (_, __, runSuper) => {
+  return runSuper();
+});
+
+subtask("ccs-make-swap", "Maker creates a swap")
+  .addParam("amount", "Amount to swap.", undefined, types.float)
+  .addOptionalParam(
+    "token",
+    "Token symbol or address. eg Meow",
+    "Meow",
+    types.string
+  )
+  .setAction(async (taskArgs, hre) => {
+    const signer = await getSigner(hre);
+    const chain = await getChain(hre);
+
+    const swapperAddress = await resolveNamedAddress(
+      "CrossChainSwapper",
+      chain
+    );
+    const swapper = CrossChainSwapper__factory.connect(swapperAddress, signer);
+
+    const amountBN = parseUnits(taskArgs.amount.toString(), sMeow.decimals);
+    const rate = parseUnits("1", sMeow.decimals);
+
+    log(`About to create swap for ${taskArgs.amount} Meow`);
+    const tx = await swapper.makeSwap(
+      sMeow.address,
+      fMeow.address,
+      Chain.fuji,
+      rate,
+      amountBN
+    );
+    await logTxDetails(
+      tx,
+      `create swap for ${taskArgs.amount} ${sMeow.symbol}`
+    );
+  });
+task("ccs-make-swap").setAction(async (_, __, runSuper) => {
   return runSuper();
 });
 

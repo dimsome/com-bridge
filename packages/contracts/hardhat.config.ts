@@ -68,7 +68,7 @@ const config: HardhatUserConfig = {
     target: "ethers-v5",
   },
   tracer: {
-    tasks: ["ccs-deposit"],
+    tasks: ["ccs-deposit", "ccs-make-swap"],
   },
 };
 
