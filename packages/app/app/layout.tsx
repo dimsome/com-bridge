@@ -34,7 +34,9 @@ export default function RootLayout({
             <Header/>
             {children}
         </Providers>
-        <ToastContainer/>
+        <ToastContainer
+            toastClassName={'!bg-purple-500 !rounded-2xl !text-purple-50'}
+         />
         </body>
         </html>
     );
