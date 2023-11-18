@@ -31,7 +31,7 @@ export const resolveName = (
   } else if (chain === Chain.sepolia) {
     switch (contractName) {
       case "CrossChainSwapper":
-        return "0xbE297B899dB97A161BD24058daB8751510951BB7";
+        return "0xc0D73Aae963CdD12a91CE98E6c059BbFAa5C732E";
       case "CCIP_Router":
         return "0xd0daae2231e9cb96b94c8512223533293c3693bf";
       case "CCIP_ChainSelector":
@@ -43,7 +43,7 @@ export const resolveName = (
   } else if (chain === Chain.fuji) {
     switch (contractName) {
       case "CrossChainSwapper":
-        return "0xa47fBe44E10000F27Eb64698720AFA1bc6C50582";
+        return "0x914F05D00C55a852D876828CedEa4b7f84d1f841";
       case "CCIP_Router":
         return "0x554472a2720e5e7d5d3c817529aba05eed5f82d8";
       case "CCIP_ChainSelector":

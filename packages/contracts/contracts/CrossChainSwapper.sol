@@ -62,6 +62,8 @@ contract CrossChainSwapper is CCIPReceiver {
     // Pool key (Source Token, Destination Token, Destination Chain Id, rate)
     //   => LiquidityPool(balance, makerSwapQueue, queueData, poolData)
     mapping(bytes32 => LiquidityPool) public liquidityPools;
+    bytes32[] pools;
+
     // Chain identifier => DestinationData(ccipChainSelector,swapper)
     mapping(uint256 => DestinationData) public destinations;
 
@@ -89,7 +91,9 @@ contract CrossChainSwapper is CCIPReceiver {
     event MakeSwap(bytes32 poolKey, uint256 poolBalance);
     event TakeSwap(
         bytes32 indexed messageId,
-        bytes32 indexed destinationPoolKey
+        bytes32 indexed destinationPoolKey,
+        uint256 sourceAmount,
+        uint256 destinationAmount
     );
     event MakerSwaps(
         bytes32 indexed messageId,
@@ -224,11 +228,13 @@ contract CrossChainSwapper is CCIPReceiver {
         uint256 destinationAmount = (amount * RATE_SCALE) / rate;
         // TODO check no in-progress settlement with destination liquidity pool
         LiquidityPool storage sourceLiquidityPool = liquidityPools[poolKey];
-        _sendTakeSwapViaCCIP(
+        bytes32 messageId = _sendTakeSwapViaCCIP(
             sourceLiquidityPool,
             destinationPoolKey,
             destinationAmount
         );
+
+        emit TakeSwap(messageId, destinationPoolKey, amount, destinationAmount);
     }
 
     /***************************************
@@ -330,8 +336,51 @@ contract CrossChainSwapper is CCIPReceiver {
         QueueMetaData memory queueData = liquidityPool.queueData;
         uint256 makerQueueLength = queueData.last + 1 - queueData.next;
         makerSwaps_ = new MakerSwap[](makerQueueLength);
+        // For each maker swap, read from storage and add to in memory result
         for (uint256 i; i < makerQueueLength; ++i) {
             makerSwaps_[i] = liquidityPool.makerSwapQueue[queueData.next + i];
+        }
+    }
+
+    function allMakerSwaps()
+        external
+        view
+        returns (MakerSwap[] memory makerSwaps_)
+    {
+        for (uint256 i; i < pools.length; ++i) {
+            // add swap to the liquidity pool
+            LiquidityPool storage liquidityPool = liquidityPools[pools[i]];
+            QueueMetaData memory queueData = liquidityPool.queueData;
+            uint256 makerQueueLength = queueData.last + 1 - queueData.next;
+            makerSwaps_ = new MakerSwap[](makerQueueLength);
+            // For each maker swap, read from storage and add to in memory result
+            for (uint256 j; j < makerQueueLength; ++j) {
+                makerSwaps_[j] = liquidityPool.makerSwapQueue[
+                    queueData.next + j
+                ];
+            }
+        }
+    }
+
+    function userMakerSwaps(
+        address user
+    ) external view returns (MakerSwap[] memory makerSwaps_) {
+        for (uint256 i; i < pools.length; ++i) {
+            // add swap to the liquidity pool
+            LiquidityPool storage liquidityPool = liquidityPools[pools[i]];
+            QueueMetaData memory queueData = liquidityPool.queueData;
+            uint256 makerQueueLength = queueData.last + 1 - queueData.next;
+            makerSwaps_ = new MakerSwap[](makerQueueLength);
+            // For each maker swap, read from storage and add to in memory result
+            for (uint256 j; j < makerQueueLength; ++j) {
+                // If the maker matches the user
+                MakerSwap memory makerSwap = liquidityPool.makerSwapQueue[
+                    queueData.next + j
+                ];
+                if (makerSwap.maker == user) {
+                    makerSwaps_[j] = makerSwap;
+                }
+            }
         }
     }
 
@@ -358,6 +407,8 @@ contract CrossChainSwapper is CCIPReceiver {
         // Initialize the maker queue for each liquidity pool
         liquidityPools[poolKey].queueData.next = 1;
         liquidityPools[poolKey].poolData = _pool;
+
+        pools.push(poolKey);
     }
 
     // TODO protect by admin role
@@ -376,7 +427,7 @@ contract CrossChainSwapper is CCIPReceiver {
         LiquidityPool storage sourceLiquidityPool,
         bytes32 destinationPoolKey,
         uint256 destinationAmount
-    ) internal {
+    ) internal returns (bytes32 messageId) {
         // send settle message via CCIP to destination chain
         bytes memory messageData = abi.encodeWithSignature(
             "take(bytes32,uint256)",
@@ -408,12 +459,10 @@ contract CrossChainSwapper is CCIPReceiver {
         if (fees > linkBalance) revert NotEnoughLink(linkBalance, fees);
 
         // Send the message through the router and store the returned message ID
-        bytes32 messageId = IRouterClient(i_router).ccipSend(
+        messageId = IRouterClient(i_router).ccipSend(
             destination.ccipChainSelector,
             ccipMessage
         );
-
-        emit TakeSwap(messageId, destinationPoolKey);
     }
 
     function _sendMakerSwapsViaCCIP(
@@ -481,15 +530,16 @@ contract CrossChainSwapper is CCIPReceiver {
             );
             _settleMaker(poolKey, takerAmount);
         }
-        // if (selector == 0x0db2314b) {
-        else {
+        if (selector == 0x0db2314b) {
             // maker(bytes32,uint256,MakerSwap[]) encoded message
-            (
-                bytes32 poolKey,
-                uint256 takerAmount,
-                MakerSwap[] memory _makerSwaps
-            ) = abi.decode(dataNoSelector, (bytes32, uint256, MakerSwap[]));
-            _settleTaker(poolKey, takerAmount, _makerSwaps);
+            // (
+            //     bytes32 poolKey,
+            //     uint256 takerAmount,
+            //     MakerSwap[] memory _makerSwaps
+            // ) = abi.decode(dataNoSelector, (bytes32, uint256, MakerSwap[]));
+            // _settleTaker(poolKey, takerAmount, _makerSwaps);
+            // hard code for now
+            _settleTaker(pools[0], 4e18, new MakerSwap[](0));
         }
     }
 

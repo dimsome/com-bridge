@@ -47,8 +47,8 @@ Token Swap
 
 | Chain         | Meow Token                                                                                                                    | Cross Chain Swapper                                                                                                           |
 | ------------- | ----------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| Sepolia       | [0x84d7F52cAF3C4A4EAdC998FD102fD23134159495](https://sepolia.etherscan.io/address/0x84d7F52cAF3C4A4EAdC998FD102fD23134159495) | [0xbE297B899dB97A161BD24058daB8751510951BB7](https://sepolia.etherscan.io/address/0xbE297B899dB97A161BD24058daB8751510951BB7) |
-| Avalance Fuji | [0xa3C235f09F1491fbc714efDAA7504089E49Df1b2](https://testnet.snowtrace.io/address/0xa3C235f09F1491fbc714efDAA7504089E49Df1b2) | [0xa47fBe44E10000F27Eb64698720AFA1bc6C50582](https://testnet.snowtrace.io/address/0xa47fBe44E10000F27Eb64698720AFA1bc6C50582) |
+| Sepolia       | [0x84d7F52cAF3C4A4EAdC998FD102fD23134159495](https://sepolia.etherscan.io/address/0x84d7F52cAF3C4A4EAdC998FD102fD23134159495) | [0xc0D73Aae963CdD12a91CE98E6c059BbFAa5C732E](https://sepolia.etherscan.io/address/0xc0D73Aae963CdD12a91CE98E6c059BbFAa5C732E) |
+| Avalance Fuji | [0xa3C235f09F1491fbc714efDAA7504089E49Df1b2](https://testnet.snowtrace.io/address/0xa3C235f09F1491fbc714efDAA7504089E49Df1b2) | [0x914F05D00C55a852D876828CedEa4b7f84d1f841](https://testnet.snowtrace.io/address/0x914F05D00C55a852D876828CedEa4b7f84d1f841) |
 
 ## Execution script
 
@@ -78,13 +78,15 @@ export NODE_URL=$NODE_URL_FUJI
 # Deploy the Meow token
 yarn task token-deploy --name meow --symbol meow --decimals 18  --network fuji
 # Transfer to team
-yarn task token-transfer --token meow --amount 100000  --recipient 0xD5fC6be6dA120227E5ACB5B6c1006A892b85BB32 --network fuji
-yarn task token-transfer --token meow --amount 100000  --recipient 0x589F6Cc29e9a08db99ab6896B2Fb3BBE28245233 --network fuji
+yarn task token-transfer --token meow --amount 100000  --recipient Dimitri --network fuji
+yarn task token-transfer --token meow --amount 100000  --recipient Adam --network fuji
 
 # Deploy selector library
 yarn task ccs-deploy-lib --network fuji
 # Deploy the CrossChainSwapper
 yarn task ccs-deploy --network fuji
+# update CrossChainSwapper address in namedAddress.ts
+
 # Send the Swapper some Link to pay for CCIP
 yarn task token-transfer --token Link --amount 3 --recipient CrossChainSwapper --network fuji
 
