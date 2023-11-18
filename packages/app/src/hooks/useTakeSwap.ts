@@ -24,6 +24,6 @@ export const useTakeSwap = ({destinationChainId, token, destinationToken, amount
     const {data, write} = useContractWrite(config);
     const {isLoading, isSuccess, isError} = useWaitForTransaction({hash: data?.hash, enabled: !!data?.hash});
     return {
-        isLoading, isSuccess, isError, write
+        isLoading, isSuccess, isError, write, hash: data?.hash
     }
 }
