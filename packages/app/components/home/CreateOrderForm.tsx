@@ -109,10 +109,7 @@ export const CreateOrderForm = () => {
             executed as soon as the other side is supplied
         </InfoItem>
 
-        <div className='flex justify-between my-2'>
-            <span className='text-primary-50'>Gas Fees</span>
-            <span>0.0003765888 ETH</span>
-        </div>
+
         <ActionButton
             destinationChain={destinationChain}
             token={selectedToken}

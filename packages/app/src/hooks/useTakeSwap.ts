@@ -3,6 +3,7 @@ import {crossChainSwapperABI} from "@/abi/CrossChainSwapperABI";
 import {parseUnits} from "ethers";
 import useContractAddresses from "@/src/hooks/useContractAddresses";
 import {useEffect} from "react";
+import {useEstimateGas} from "@/src/hooks/useMakeSwap";
 
 type UseTakeSwapProps = {
     destinationChainId: number,
@@ -21,9 +22,11 @@ export const useTakeSwap = ({destinationChainId, token, destinationToken, amount
         address: addresses.Swapper,
         args: [token, destinationToken, destinationChainId, fee, amount]
     });
+    const estimatedGas = useEstimateGas(config.request)
+
     const {data, write} = useContractWrite(config);
     const {isLoading, isSuccess, isError} = useWaitForTransaction({hash: data?.hash, enabled: !!data?.hash});
     return {
-        isLoading, isSuccess, isError, write, hash: data?.hash
+        isLoading, isSuccess, isError, write, hash: data?.hash, gas: estimatedGas
     }
 }
