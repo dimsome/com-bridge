@@ -1,0 +1,33 @@
+specVersion: 0.0.5
+schema:
+  file: schema.graphql
+dataSources:
+  - kind: ethereum
+    name: CrossChainSwapper
+    network: sepolia
+    source:
+      address: "0x5369B69810E7e682dc2ce04C9dF972Aa61887Fdc"
+      abi: CrossChainSwapper
+      startBlock: 4718871
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - MakeSwap
+        - MakerSwaps
+        - ReceiverCCIPMessage
+        - TakeSwap
+      abis:
+        - name: CrossChainSwapper
+          file: CrossChainSwapper/abis/CrossChainSwapper.json
+      eventHandlers:
+        - event: MakeSwap(bytes32,uint256)
+          handler: handleMakeSwap
+        - event: MakerSwaps(indexed bytes32,indexed bytes32,(address,uint256)[])
+          handler: handleMakerSwaps
+        - event: ReceiverCCIPMessage(bytes,bytes4)
+          handler: handleReceiverCCIPMessage
+        - event: TakeSwap(indexed bytes32,indexed bytes32)
+          handler: handleTakeSwap
+      file: CrossChainSwapper/CrossChainSwapper.wasm
