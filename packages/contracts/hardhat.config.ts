@@ -56,6 +56,12 @@ const config: HardhatUserConfig = {
     scroll: {
       url: process.env.NODE_URL ?? "",
     },
+    arbitrum: {
+      url: process.env.NODE_URL ?? "",
+    },
+    arbitrumGoerli: {
+      url: process.env.NODE_URL ?? "",
+    },
   },
   abiExporter: {
     path: "./dist/abis",

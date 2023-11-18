@@ -45,4 +45,45 @@ export const fLink: Token = {
   decimals: 18,
 } as const;
 
-export const tokens = [sMeow, sLink, fMeow, fLink];
+// Polygon Mumbai
+
+export const mMeow: Token = {
+  symbol: "meow",
+  address: "0x75281fFc939bc0D013964954959793f760342B11",
+  chain: Chain.mumbai,
+  decimals: 18,
+} as const;
+
+export const mLink: Token = {
+  symbol: "Link",
+  address: "0x326C977E6efc84E512bB9C30f76E30c160eD06FB",
+  chain: Chain.mumbai,
+  decimals: 18,
+} as const;
+
+// Arbitrum Goerli
+
+export const agMeow: Token = {
+  symbol: "meow",
+  address: "0x75281fFc939bc0D013964954959793f760342B11",
+  chain: Chain.arbitrumGoerli,
+  decimals: 18,
+} as const;
+
+export const agLink: Token = {
+  symbol: "Link",
+  address: "0xd14838A68E8AFBAdE5efb411d5871ea0011AFd28",
+  chain: Chain.arbitrumGoerli,
+  decimals: 18,
+} as const;
+
+export const tokens = [
+  sMeow,
+  sLink,
+  fMeow,
+  fLink,
+  mMeow,
+  mLink,
+  agMeow,
+  agLink,
+];
