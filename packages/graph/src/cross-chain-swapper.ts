@@ -11,7 +11,7 @@ import {
   TakeSwap,
 } from "../generated/schema";
 
-import { ByteArray, Bytes } from "@graphprotocol/graph-ts";
+import { BigInt, ByteArray, Bytes } from "@graphprotocol/graph-ts";
 
 export function handleMakeSwap(event: MakeSwapEvent): void {
   let entity = new MakeSwap(
@@ -33,19 +33,13 @@ export function handleMakerSwaps(event: MakerSwapsEvent): void {
   );
   entity.messageId = event.params.messageId;
   entity.destinationPoolKey = event.params.destinationPoolKey;
-  // Loop through the array of bytes32 and convert to bytes
-  let filledMakerSwaps: Array<Bytes> = [];
-  for (let i = 0; i < event.params.filledMakerSwaps.length; i++) {
-    let filledMakerSwap = event.params.filledMakerSwaps[i];
-    let makerBytes = Bytes.fromHexString(
-      filledMakerSwap.maker.toHex()
-    ) as Bytes;
-    let amountBytes = Bytes.fromI32(filledMakerSwap.amount.toI32());
-    let combined = makerBytes.concat(amountBytes);
-    filledMakerSwaps.push(combined);
-  }
-  entity.filledMakerSwaps = filledMakerSwaps;
 
+  entity.filledMakerSwapsAmount = event.params.filledMakerSwaps.map<BigInt>(
+    (s) => s.amount
+  );
+  entity.filledMakerSwapsAdress = event.params.filledMakerSwaps.map<Bytes>(
+    (s) => s.maker
+  );
   entity.blockNumber = event.block.number;
   entity.blockTimestamp = event.block.timestamp;
   entity.transactionHash = event.transaction.hash;
