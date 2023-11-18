@@ -46,6 +46,8 @@ Support is limited to the chains that support the Chainlink CCIP protocol. Curre
 
 The Chainlink Cross-Chain Interoperability Protocol (CCIP) is a standard for cross-chain communication. We use it to send messages between the chains to settle the swap and unlock the tokens.
 
+It is core to our protocol and relies on the security of the Chainlink network.
+
 ### Arbitrum Testnet
 
 The contracts are deployed on the Arbitrum Testnet with the following addresses:
