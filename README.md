@@ -57,7 +57,7 @@ The contracts are deployed on the Linea testnet with the following addresses:
 
 (Bridging not possible at the moment, only base contracts deployed because of missing crosschain messaging protocol)
 
-## Scroll Sepolia
+### Scroll Sepolia
 
 The contracts are deployed on the Scroll testnet with the following addresses:
 
@@ -66,7 +66,7 @@ The contracts are deployed on the Scroll testnet with the following addresses:
 
 (Bridging not possible at the moment, only base contracts deployed because of missing crosschain messaging protocol)
 
-## Mantle testnet
+### Mantle testnet
 
 The contracts are deployed on the Mantle testnet with the following addresses:
 
@@ -75,7 +75,7 @@ The contracts are deployed on the Mantle testnet with the following addresses:
 
 (Bridging not possible at the moment, only base contracts deployed because of missing crosschain messaging protocol)
 
-## Celo testnet
+### Celo testnet
 
 The contracts are deployed on the Celo testnet with the following addresses:
 
@@ -84,7 +84,7 @@ The contracts are deployed on the Celo testnet with the following addresses:
 
 (Bridging not possible at the moment, only base contracts deployed because of missing crosschain messaging protocol)
 
-## Base testnet
+### Base testnet
 
 The contracts are deployed on the Base testnet with the following addresses:
 
@@ -94,6 +94,16 @@ The contracts are deployed on the Base testnet with the following addresses:
 (Bridging not possible at the moment, only base contracts deployed because of missing crosschain messaging protocol)
 
 ## How to use it
+
+Run the front end app locally:
+
+```sh
+yarn install
+```
+
+```sh
+yarn run start:app
+```
 
 ## Project Structure
 
