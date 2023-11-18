@@ -234,24 +234,29 @@ contract CrossChainSwapper is CCIPReceiver {
             // Need to invert the rate
             (RATE_SCALE * RATE_SCALE) / rate
         );
-        uint256 destinationAmount = (amount * RATE_SCALE) / rate;
+        uint256 takerAmount = (amount * RATE_SCALE) / rate;
 
         // TODO check no in-progress settlement with destination liquidity pool
 
         bytes32 messageId = _sendTakeSwapViaCCIP(
             liquidityPools[poolKey].poolData.destinationChainId,
             destinationPoolKey,
-            destinationAmount
+            msg.sender,
+            takerAmount
         );
 
-        emit TakeSwap(messageId, destinationPoolKey, amount, destinationAmount);
+        emit TakeSwap(messageId, destinationPoolKey, amount, takerAmount);
     }
 
     /***************************************
                     Settle
     ****************************************/
 
-    function _settleMaker(bytes32 poolKey, uint256 takerAmount) internal {
+    function _settleMaker(
+        bytes32 poolKey,
+        address taker,
+        uint256 takerAmount
+    ) internal {
         // Check the poolId is valid
         if (!validPools[poolKey]) revert InvalidPool();
 
@@ -316,7 +321,9 @@ contract CrossChainSwapper is CCIPReceiver {
         uint256 destinationAmount = (takerAmount * RATE_SCALE) / poolData.rate;
 
         _sendMakerSwapsViaCCIP(
+            poolData.destinationChainId,
             destinationPoolKey,
+            taker,
             destinationAmount,
             filledMakerSwaps
         );
@@ -328,17 +335,17 @@ contract CrossChainSwapper is CCIPReceiver {
         uint256 takerAmount,
         MakerSwap[] memory swaps
     ) internal {
-        LiquidityPool storage liquidityPool = liquidityPools[poolKey];
+        address sourceToken = liquidityPools[poolKey].poolData.sourceToken;
 
         // burn taker's locked tokens so they can't be withdrawn
-        userBalances[msg.sender][liquidityPool.poolData.sourceToken]
-            .locked -= uint128(takerAmount);
+        userBalances[taker][sourceToken].locked -= uint128(takerAmount);
 
         // for each maker swaps
         for (uint256 i; i < swaps.length; ++i) {
             // credit the market makers
-            userBalances[swaps[i].maker][liquidityPool.poolData.sourceToken]
-                .unlocked += uint128(swaps[i].amount);
+            userBalances[swaps[i].maker][sourceToken].unlocked += uint128(
+                swaps[i].amount
+            );
         }
     }
 
@@ -357,28 +364,28 @@ contract CrossChainSwapper is CCIPReceiver {
                 View Functions
     ****************************************/
 
-    function makerSwaps(
-        bytes32 poolKey
-    ) external view returns (MakerSwapAll[] memory makerSwaps_) {
-        // add swap to the liquidity pool
-        LiquidityPool storage liquidityPool = liquidityPools[poolKey];
-        LiquidityPoolData memory poolData = liquidityPool.poolData;
-        QueueMetaData memory queueData = liquidityPool.queueData;
-        uint256 makerQueueLength = queueData.last + 1 - queueData.next;
-        makerSwaps_ = new MakerSwapAll[](makerQueueLength);
-        // For each maker swap, read from storage and add to in memory result
-        for (uint256 i; i < makerQueueLength; ++i) {
-            MakerSwap memory makerSwap = liquidityPool.makerSwapQueue[
-                queueData.next + i
-            ];
-            makerSwaps_[i].maker = makerSwap.maker;
-            makerSwaps_[i].amount = makerSwap.amount;
-            makerSwaps_[i].sourceToken = poolData.sourceToken;
-            makerSwaps_[i].destinationToken = poolData.destinationToken;
-            makerSwaps_[i].destinationChainId = poolData.destinationChainId;
-            makerSwaps_[i].rate = poolData.rate;
-        }
-    }
+    // function makerSwaps(
+    //     bytes32 poolKey
+    // ) external view returns (MakerSwapAll[] memory makerSwaps_) {
+    //     // add swap to the liquidity pool
+    //     LiquidityPool storage liquidityPool = liquidityPools[poolKey];
+    //     LiquidityPoolData memory poolData = liquidityPool.poolData;
+    //     QueueMetaData memory queueData = liquidityPool.queueData;
+    //     uint256 makerQueueLength = queueData.last + 1 - queueData.next;
+    //     makerSwaps_ = new MakerSwapAll[](makerQueueLength);
+    //     // For each maker swap, read from storage and add to in memory result
+    //     for (uint256 i; i < makerQueueLength; ++i) {
+    //         MakerSwap memory makerSwap = liquidityPool.makerSwapQueue[
+    //             queueData.next + i
+    //         ];
+    //         makerSwaps_[i].maker = makerSwap.maker;
+    //         makerSwaps_[i].amount = makerSwap.amount;
+    //         makerSwaps_[i].sourceToken = poolData.sourceToken;
+    //         makerSwaps_[i].destinationToken = poolData.destinationToken;
+    //         makerSwaps_[i].destinationChainId = poolData.destinationChainId;
+    //         makerSwaps_[i].rate = poolData.rate;
+    //     }
+    // }
 
     function allMakerSwaps()
         external
@@ -407,34 +414,36 @@ contract CrossChainSwapper is CCIPReceiver {
         }
     }
 
-    function userMakerSwaps(
-        address user
-    ) external view returns (MakerSwapAll[] memory makerSwaps_) {
-        for (uint256 i; i < pools.length; ++i) {
-            // add swap to the liquidity pool
-            LiquidityPool storage liquidityPool = liquidityPools[pools[i]];
-            LiquidityPoolData memory poolData = liquidityPool.poolData;
-            QueueMetaData memory queueData = liquidityPool.queueData;
-            uint256 makerQueueLength = queueData.last + 1 - queueData.next;
-            makerSwaps_ = new MakerSwapAll[](makerQueueLength);
-            // For each maker swap, read from storage and add to in memory result
-            for (uint256 j; j < makerQueueLength; ++j) {
-                // If the maker matches the user
-                MakerSwap memory makerSwap = liquidityPool.makerSwapQueue[
-                    queueData.next + j
-                ];
-                if (makerSwap.maker == user) {
-                    makerSwaps_[j].maker = makerSwap.maker;
-                    makerSwaps_[j].amount = makerSwap.amount;
-                    makerSwaps_[j].sourceToken = poolData.sourceToken;
-                    makerSwaps_[j].destinationToken = poolData.destinationToken;
-                    makerSwaps_[j].destinationChainId = poolData
-                        .destinationChainId;
-                    makerSwaps_[j].rate = poolData.rate;
-                }
-            }
-        }
-    }
+    // function userMakerSwaps(
+    //     address user
+    // ) external view returns (MakerSwapAll[] memory makerSwaps_) {
+    //     for (uint256 i; i < pools.length; ++i) {
+    //         // add swap to the liquidity pool
+    //         LiquidityPool storage liquidityPool = liquidityPools[pools[i]];
+    //         LiquidityPoolData memory poolData = liquidityPool.poolData;
+    //         QueueMetaData memory queueData = liquidityPool.queueData;
+
+    //         uint256 makerQueueLength = queueData.last + 1 - queueData.next;
+    //         makerSwaps_ = new MakerSwapAll[](makerQueueLength);
+
+    //         // For each maker swap, read from storage and add to in memory result
+    //         for (uint256 j; j < makerQueueLength; ++j) {
+    //             // If the maker matches the user
+    //             MakerSwap memory makerSwap = liquidityPool.makerSwapQueue[
+    //                 queueData.next + j
+    //             ];
+    //             if (makerSwap.maker == user) {
+    //                 makerSwaps_[j].maker = makerSwap.maker;
+    //                 makerSwaps_[j].amount = makerSwap.amount;
+    //                 makerSwaps_[j].sourceToken = poolData.sourceToken;
+    //                 makerSwaps_[j].destinationToken = poolData.destinationToken;
+    //                 makerSwaps_[j].destinationChainId = poolData
+    //                     .destinationChainId;
+    //                 makerSwaps_[j].rate = poolData.rate;
+    //             }
+    //         }
+    //     }
+    // }
 
     /***************************************
                 Admin Functions
@@ -478,13 +487,15 @@ contract CrossChainSwapper is CCIPReceiver {
     function _sendTakeSwapViaCCIP(
         uint64 destinationChainId,
         bytes32 destinationPoolKey,
-        uint256 destinationAmount
+        address taker,
+        uint256 takerAmount
     ) internal returns (bytes32 messageId) {
         // send settle message via CCIP to destination chain
         bytes memory messageData = abi.encodeWithSignature(
-            "take(bytes32,uint256)",
+            "take(bytes32,address,uint256)",
             destinationPoolKey,
-            destinationAmount
+            taker,
+            takerAmount
         );
 
         DestinationData memory destination = destinations[destinationChainId];
@@ -516,25 +527,23 @@ contract CrossChainSwapper is CCIPReceiver {
     }
 
     function _sendMakerSwapsViaCCIP(
+        uint64 destinationChainId,
         bytes32 destinationPoolKey,
+        address taker,
         uint256 takerAmount,
         MakerSwap[] memory filledMakerSwaps
     ) internal {
         // send filled maker swaps via CCIP to destination chain
         bytes memory messageData = abi.encodeWithSignature(
-            "maker(bytes32,uint256,MakerSwap[])",
+            "maker(bytes32,address,uint256,MakerSwap[])",
             destinationPoolKey,
+            taker,
             takerAmount,
             filledMakerSwaps
         );
         emit SendingCCIPMessage(messageData);
 
-        LiquidityPoolData memory destinationPool = liquidityPools[
-            destinationPoolKey
-        ].poolData;
-        DestinationData memory destination = destinations[
-            destinationPool.destinationChainId
-        ];
+        DestinationData memory destination = destinations[destinationChainId];
 
         // CCIPData memory ccipData = sourceLiquidityPool.ccip;
         Client.EVM2AnyMessage memory ccipMessage = Client.EVM2AnyMessage({
@@ -572,24 +581,34 @@ contract CrossChainSwapper is CCIPReceiver {
         bytes memory dataNoSelector = SelectorLib.removeSelector(message.data);
         emit ReceiverCCIPMessage(selector, dataNoSelector);
 
-        if (selector == 0xc3a5273a) {
-            // If take(bytes32,uint32) encoded message
-            (bytes32 poolKey, uint256 takerAmount) = abi.decode(
+        if (selector == 0x52f43d76) {
+            // If take(bytes32,address,uint256) encoded message
+            (bytes32 poolKey, address taker, uint256 takerAmount) = abi.decode(
                 dataNoSelector,
-                (bytes32, uint256)
+                (bytes32, address, uint256)
             );
-            _settleMaker(poolKey, takerAmount);
-        }
-        if (selector == 0x0db2314b) {
-            // maker(bytes32,uint256,MakerSwap[]) encoded message
+            _settleMaker(poolKey, taker, takerAmount);
+        } else {
+            // if (selector == 0x0db2314b) {
+            // make(bytes32,address,uint256,MakerSwap[]) encoded message
             // (
             //     bytes32 poolKey,
+            //     address taker,
             //     uint256 takerAmount,
             //     MakerSwap[] memory _makerSwaps
-            // ) = abi.decode(dataNoSelector, (bytes32, uint256, MakerSwap[]));
-            // _settleTaker(poolKey, takerAmount, _makerSwaps);
+            // ) = abi.decode(
+            //         dataNoSelector,
+            //         (bytes32, address, uint256, MakerSwap[])
+            //     );
+            // _settleTaker(poolKey, taker, takerAmount, _makerSwaps);
+
             // hard code for now
-            // _settleTaker(pools[0], 4e18, new MakerSwap[](0));
+            _settleTaker(
+                pools[0],
+                0xF1BDa9086904aEDE7C3DA6964AA400b8e13Ea51C,
+                4e18,
+                new MakerSwap[](0)
+            );
         }
     }
 

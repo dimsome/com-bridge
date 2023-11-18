@@ -10,7 +10,7 @@ import { logger } from "../utils/logger";
 import { getSigner } from "../utils/signer";
 import { deployContract, logTxDetails } from "../utils/transaction";
 import { Chain, getChain } from "../utils/network";
-import { fMeow, sMeow } from "../utils/tokens";
+import { agMeow, fMeow, mMeow, sMeow } from "../utils/tokens";
 import { resolveName } from "../utils/namedAddress";
 import { resolveAssetToken } from "../utils/resolvers";
 import { parse } from "path";
@@ -111,7 +111,8 @@ subtask("ccs-take-swap", "Taker matches a swap")
       sMeow.address,
       Chain.sepolia,
       rate,
-      amountBN
+      amountBN,
+      { gasLimit: 1000000 }
     );
     await logTxDetails(
       tx,
@@ -199,6 +200,24 @@ subtask("ccs-deploy", "Deploys a new Cross Chain Swapper contract").setAction(
           rate: parseEther("1"),
         },
       ];
+    } else if (chain === Chain.mumbai) {
+      liquidityPools = [
+        {
+          sourceToken: mMeow.address,
+          destinationToken: agMeow.address,
+          destinationChainId: Chain.mumbai,
+          rate: parseEther("1"),
+        },
+      ];
+    } else if (chain === Chain.arbitrumGoerli) {
+      liquidityPools = [
+        {
+          sourceToken: agMeow.address,
+          destinationToken: mMeow.address,
+          destinationChainId: Chain.arbitrumGoerli,
+          rate: parseEther("1"),
+        },
+      ];
     }
 
     const selectorLibAddress = await resolveName("SelectorLib", chain);
@@ -214,15 +233,15 @@ subtask("ccs-deploy", "Deploys a new Cross Chain Swapper contract").setAction(
       linkToken.address,
     ];
     log(`About to deploy CrossChainSwapper contract on ${chain}`);
-    // const crossChainSwapper = await deployContract(
-    //   new CrossChainSwapper__factory(linkedLibraryAddresses, signer),
-    //   `Cross Chain Swapper to ${chain}`,
-    //   constructorArguments
-    // );
-    const crossChainSwapper = CrossChainSwapper__factory.connect(
-      "0x1A633671F6455213809dcC2Af44e1B787e9bfD07",
-      signer
+    const crossChainSwapper = await deployContract(
+      new CrossChainSwapper__factory(linkedLibraryAddresses, signer),
+      `Cross Chain Swapper to ${chain}`,
+      constructorArguments
     );
+    // const crossChainSwapper = CrossChainSwapper__factory.connect(
+    //   "0x6340B990D14Fc67bcFb4Ee3E1c8987E27fA15a23",
+    //   signer
+    // );
 
     await verifyEtherscan(hre, {
       address: crossChainSwapper.address,

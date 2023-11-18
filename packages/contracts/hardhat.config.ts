@@ -2,6 +2,7 @@ import "@nomiclabs/hardhat-ethers";
 import "@nomicfoundation/hardhat-chai-matchers";
 import "@typechain/hardhat";
 import "hardhat-gas-reporter";
+import "hardhat-contract-sizer";
 import "hardhat-tracer";
 import "solidity-coverage";
 import "hardhat-abi-exporter";
@@ -84,6 +85,10 @@ const config: HardhatUserConfig = {
   },
   tracer: {
     tasks: ["ccs-deposit", "ccs-make-swap", "ccs-take-swap", "ccs-dest"],
+  },
+  contractSizer: {
+    alphaSort: true,
+    runOnCompile: false,
   },
 };
 
