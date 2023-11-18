@@ -1,4 +1,6 @@
-![ChillCat](./ChillCat.png)
+<p align="center" width="100%">
+    <img width="33%" src="https://raw.githubusercontent.com/dimsome/com-bridge/main/ChillCat.png"> 
+</p>
 
 # CoM Repo for ETHGlobal Istanbul 2023 Hackathon
 
