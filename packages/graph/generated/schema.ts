@@ -52,8 +52,8 @@ export class MakeSwap extends Entity {
     this.set("id", Value.fromBytes(value));
   }
 
-  get token(): Bytes {
-    let value = this.get("token");
+  get poolKey(): Bytes {
+    let value = this.get("poolKey");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
@@ -61,21 +61,8 @@ export class MakeSwap extends Entity {
     }
   }
 
-  set token(value: Bytes) {
-    this.set("token", Value.fromBytes(value));
-  }
-
-  get destinationChainId(): BigInt {
-    let value = this.get("destinationChainId");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set destinationChainId(value: BigInt) {
-    this.set("destinationChainId", Value.fromBigInt(value));
+  set poolKey(value: Bytes) {
+    this.set("poolKey", Value.fromBytes(value));
   }
 
   get poolBalance(): BigInt {
@@ -211,6 +198,115 @@ export class MakerSwaps extends Entity {
 
   set filledMakerSwaps(value: Array<Bytes>) {
     this.set("filledMakerSwaps", Value.fromBytesArray(value));
+  }
+
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
+  }
+
+  get blockTimestamp(): BigInt {
+    let value = this.get("blockTimestamp");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set blockTimestamp(value: BigInt) {
+    this.set("blockTimestamp", Value.fromBigInt(value));
+  }
+
+  get transactionHash(): Bytes {
+    let value = this.get("transactionHash");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set transactionHash(value: Bytes) {
+    this.set("transactionHash", Value.fromBytes(value));
+  }
+}
+
+export class ReceiverCCIPMessage extends Entity {
+  constructor(id: Bytes) {
+    super();
+    this.set("id", Value.fromBytes(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save ReceiverCCIPMessage entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.BYTES,
+        `Entities of type ReceiverCCIPMessage must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("ReceiverCCIPMessage", id.toBytes().toHexString(), this);
+    }
+  }
+
+  static loadInBlock(id: Bytes): ReceiverCCIPMessage | null {
+    return changetype<ReceiverCCIPMessage | null>(
+      store.get_in_block("ReceiverCCIPMessage", id.toHexString())
+    );
+  }
+
+  static load(id: Bytes): ReceiverCCIPMessage | null {
+    return changetype<ReceiverCCIPMessage | null>(
+      store.get("ReceiverCCIPMessage", id.toHexString())
+    );
+  }
+
+  get id(): Bytes {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set id(value: Bytes) {
+    this.set("id", Value.fromBytes(value));
+  }
+
+  get messageData(): Bytes {
+    let value = this.get("messageData");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set messageData(value: Bytes) {
+    this.set("messageData", Value.fromBytes(value));
+  }
+
+  get selector(): Bytes {
+    let value = this.get("selector");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set selector(value: Bytes) {
+    this.set("selector", Value.fromBytes(value));
   }
 
   get blockNumber(): BigInt {

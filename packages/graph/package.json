@@ -1,13 +1,13 @@
 {
-  "name": "graph",
+  "name": "com",
   "license": "UNLICENSED",
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ graph",
-    "create-local": "graph create --node http://localhost:8020/ graph",
-    "remove-local": "graph remove --node http://localhost:8020/ graph",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 graph",
+    "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ com",
+    "create-local": "graph create --node http://localhost:8020/ com",
+    "remove-local": "graph remove --node http://localhost:8020/ com",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 com",
     "test": "graph test"
   },
   "dependencies": {

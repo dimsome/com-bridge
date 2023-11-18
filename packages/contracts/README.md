@@ -31,51 +31,90 @@ Token Swap
 
 # Contract Deployments
 
+## TODO: Deployments
+
+| Network               | Requirements                              | Status |
+| --------------------- | ----------------------------------------- | ------ |
+| Arbitrum Goerli       | Deploy and verify contracts               | TODO   |
+| Polygon zkEVM Testnet | Deploy and verify contracts               | TODO   |
+| Linea testnet         | Deploy and verify contracts               | TODO   |
+| Celo testnet          | Deploy and verify contracts               | TODO   |
+| Mantle testnet        | Deploy and verify contracts               | TODO   |
+| Scroll testnet        | Deploy and verify contracts               | TODO   |
+| Gnosischain testnet   | Deploy and verify contracts, nice to have | TODO   |
+
+## Current Deployments
+
 | Chain         | Meow Token                                                                                                                    | Cross Chain Swapper                                                                                                           |
 | ------------- | ----------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| Sepolia       | [0x84d7F52cAF3C4A4EAdC998FD102fD23134159495](https://sepolia.etherscan.io/address/0x84d7F52cAF3C4A4EAdC998FD102fD23134159495) | [0xA3C1923957c91704BEd2B5814108a730a9b75Eb7](https://sepolia.etherscan.io/address/0xA3C1923957c91704BEd2B5814108a730a9b75Eb7) |
-| Avalance Fuji | [0xa3C235f09F1491fbc714efDAA7504089E49Df1b2](https://testnet.snowtrace.io/address/0xa3C235f09F1491fbc714efDAA7504089E49Df1b2) | [0x4a3C098D5D1422574015A55d7ad9Cf904226a2e6](https://testnet.snowtrace.io/address/0x4a3C098D5D1422574015A55d7ad9Cf904226a2e6) |
+| Sepolia       | [0x84d7F52cAF3C4A4EAdC998FD102fD23134159495](https://sepolia.etherscan.io/address/0x84d7F52cAF3C4A4EAdC998FD102fD23134159495) | [0xc0D73Aae963CdD12a91CE98E6c059BbFAa5C732E](https://sepolia.etherscan.io/address/0xc0D73Aae963CdD12a91CE98E6c059BbFAa5C732E) |
+| Avalance Fuji | [0xa3C235f09F1491fbc714efDAA7504089E49Df1b2](https://testnet.snowtrace.io/address/0xa3C235f09F1491fbc714efDAA7504089E49Df1b2) | [0x914F05D00C55a852D876828CedEa4b7f84d1f841](https://testnet.snowtrace.io/address/0x914F05D00C55a852D876828CedEa4b7f84d1f841) |
+
+## Execution script
 
 ```sh
 export PRIVATE_KEY=
+export NODE_URL_SEPOLIA=
+export ETHERSCAN_KEY_SEPOLIA=
+export NODE_URL_FUJI=
+export ETHERSCAN_KEY_FUJI=
 
 ## Sepolia
+
+export ETHERSCAN_KEY=$ETHERSCAN_KEY_SEPOLIA
+export NODE_URL=$NODE_URL_SEPOLIA
 
 # Deploy the Meow token
 yarn task token-deploy --name meow --symbol meow --decimals 18  --network sepolia
 # Transfer to team
-yarn task token-transfer --token meow --amount 100000  --recipient 0xD5fC6be6dA120227E5ACB5B6c1006A892b85BB32 --network sepolia
-yarn task token-transfer --token meow --amount 100000  --recipient 0x589F6Cc29e9a08db99ab6896B2Fb3BBE28245233 --network sepolia
+yarn task token-transfer --token meow --amount 100000  --recipient Dimitri --network sepolia
+yarn task token-transfer --token meow --amount 100000  --recipient Adam --network sepolia
 
 ## Avalanche Fuji
+
+export ETHERSCAN_KEY=$ETHERSCAN_KEY_FUJI
+export NODE_URL=$NODE_URL_FUJI
 
 # Deploy the Meow token
 yarn task token-deploy --name meow --symbol meow --decimals 18  --network fuji
 # Transfer to team
-yarn task token-transfer --token meow --amount 100000  --recipient 0xD5fC6be6dA120227E5ACB5B6c1006A892b85BB32 --network fuji
-yarn task token-transfer --token meow --amount 100000  --recipient 0x589F6Cc29e9a08db99ab6896B2Fb3BBE28245233 --network fuji
+yarn task token-transfer --token meow --amount 100000  --recipient Dimitri --network fuji
+yarn task token-transfer --token meow --amount 100000  --recipient Adam --network fuji
 
+# Deploy selector library
+yarn task ccs-deploy-lib --network fuji
 # Deploy the CrossChainSwapper
 yarn task ccs-deploy --network fuji
+# update CrossChainSwapper address in namedAddress.ts
+
 # Send the Swapper some Link to pay for CCIP
-yarn task token-transfer --token Link --amount 1  --recipient CrossChainSwapper --network fuji
+yarn task token-transfer --token Link --amount 3 --recipient CrossChainSwapper --network fuji
 
 ## Sepolia
 
+export ETHERSCAN_KEY=$ETHERSCAN_KEY_SEPOLIA
+export NODE_URL=$NODE_URL_SEPOLIA
+
+# Deploy selector library
+yarn task ccs-deploy-lib --network sepolia
 # Deploy the CrossChainSwapper
 yarn task ccs-deploy --network sepolia
-# Send the Swapper some Link to pay for CCIP
-yarn task token-transfer --token Link --amount 1  --recipient CrossChainSwapper --network sepolia
+# update CrossChainSwapper address in namedAddress.ts
 
+# Send the Swapper some Link to pay for CCIP
+yarn task token-transfer --token Link --amount 3 --recipient CrossChainSwapper --network sepolia
 # Set the Avalanche Fuji destination details
 yarn task ccs-dest --chain-id 43113 --network sepolia
 
 # Approve the CrossChainSwapper to transfer Meow tokens
 yarn task token-approve --token meow --spender CrossChainSwapper --network sepolia
 # Deposit Meow tokens into the CrossChainSwapper
-yarn task ccs-deposit --amount 10 --token meow --network sepolia
+yarn task ccs-deposit --amount 1000 --token meow --network sepolia
 
 ## Avalanche Fuji
+
+export ETHERSCAN_KEY=$ETHERSCAN_KEY_FUJI
+export NODE_URL=$NODE_URL_FUJI
 
 # Set the Sepolia destination details
 yarn task ccs-dest --chain-id 11155111 --network fuji
@@ -83,23 +122,72 @@ yarn task ccs-dest --chain-id 11155111 --network fuji
 # Approve the CrossChainSwapper to transfer Meow tokens
 yarn task token-approve --token meow --spender CrossChainSwapper --network fuji
 # Deposit Meow tokens into the CrossChainSwapper
-yarn task ccs-deposit --amount 20 --token meow --network fuji
-# Taker creates a swap
+yarn task ccs-deposit --amount 2000 --token meow --network fuji
 
 ## Sepolia
 
+export ETHERSCAN_KEY=$ETHERSCAN_KEY_SEPOLIA
+export NODE_URL=$NODE_URL_SEPOLIA
+
 # Maker creates a swap
-yarn task ccs-make-swap --amount 8 --token meow --network sepolia
+yarn task ccs-make-swap --amount 990 --token meow --network sepolia
 
 ## Avalanche Fuji
 
+export ETHERSCAN_KEY=$ETHERSCAN_KEY_FUJI
+export NODE_URL=$NODE_URL_FUJI
+
 # Taker matches the swap
-# yarn task ccs-deploy --network fuji
-# yarn task token-transfer --token Link --amount 3  --recipient CrossChainSwapper --network fuji
-# yarn task ccs-dest --chain-id 11155111 --network fuji
+yarn task ccs-take-swap --amount 4 --token meow --network fuji
+```
+
+Taker side redeploy
+
+```sh
+export ETHERSCAN_KEY=$ETHERSCAN_KEY_FUJI
+export NODE_URL=$NODE_URL_FUJI
+
+yarn task ccs-deploy --network fuji
+# update CrossChainSwapper address in namedAddress.ts
+yarn task token-transfer --token Link --amount 3  --recipient CrossChainSwapper --network fuji
+yarn task ccs-dest --chain-id 11155111 --network fuji
+yarn task token-approve --token meow --spender CrossChainSwapper --network fuji
+yarn task ccs-deposit --amount 2000 --token meow --network fuji
 yarn task ccs-take-swap --amount 8 --token meow --network fuji
 
-# yarn task:fork ccs-take-swap --amount 8 --token meow --network fuji
+# copy tx hash and view on the Chainlink explorer https://ccip.chain.link/
 
-f
+# yarn task:fork ccs-take-swap --amount 8 --token meow --network fuji
 ```
+
+Maker side redeploy
+
+```sh
+export ETHERSCAN_KEY=$ETHERSCAN_KEY_SEPOLIA
+export NODE_URL=$NODE_URL_SEPOLIA
+
+yarn task ccs-deploy --network sepolia
+# update CrossChainSwapper address in namedAddress.ts
+yarn task token-transfer --token Link --amount 3  --recipient CrossChainSwapper --network sepolia
+yarn task ccs-dest --chain-id 43113 --network sepolia
+yarn task token-approve --token meow --spender CrossChainSwapper --network sepolia
+yarn task ccs-deposit --amount 1000 --token meow --network sepolia
+
+export ETHERSCAN_KEY=$ETHERSCAN_KEY_FUJI
+export NODE_URL=$NODE_URL_FUJI
+
+yarn task ccs-dest --chain-id 11155111 --network fuji
+yarn task ccs-take-swap --amount 7 --token meow --network fuji
+```
+
+## Proof of CCIP messages
+
+https://ccip.chain.link/tx/0xbd028151febc88d8c61479efe0eea6330b6f91507725f9930acdc6e47c628a22
+
+Avalanche Fuji side sending a CCIP message with the taker swap.
+
+![Fuji send](./docs/c3d7cd36.svg)
+
+Sepolia side receiving CCIP message and sending the filled maker swaps back to Fuji
+
+![Sepolia receive and send](./docs/bd028a22.svg)

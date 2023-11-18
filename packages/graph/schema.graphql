@@ -1,7 +1,6 @@
 type MakeSwap @entity(immutable: true) {
   id: Bytes!
-  token: Bytes! # address
-  destinationChainId: BigInt! # uint64
+  poolKey: Bytes! # bytes32
   poolBalance: BigInt! # uint256
   blockNumber: BigInt!
   blockTimestamp: BigInt!
@@ -13,6 +12,15 @@ type MakerSwaps @entity(immutable: true) {
   messageId: Bytes! # bytes32
   destinationPoolKey: Bytes! # bytes32
   filledMakerSwaps: [Bytes!]! # tuple[]
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type ReceiverCCIPMessage @entity(immutable: true) {
+  id: Bytes!
+  messageData: Bytes! # bytes
+  selector: Bytes! # bytes4
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!

@@ -50,6 +50,12 @@ const config: HardhatUserConfig = {
     mumbai: {
       url: process.env.NODE_URL ?? "",
     },
+    celo: {
+      url: process.env.NODE_URL ?? "",
+    },
+    scroll: {
+      url: process.env.NODE_URL ?? "",
+    },
   },
   abiExporter: {
     path: "./dist/abis",

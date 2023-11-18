@@ -23,16 +23,12 @@ export class MakeSwap__Params {
     this._event = event;
   }
 
-  get token(): Address {
-    return this._event.parameters[0].value.toAddress();
-  }
-
-  get destinationChainId(): BigInt {
-    return this._event.parameters[1].value.toBigInt();
+  get poolKey(): Bytes {
+    return this._event.parameters[0].value.toBytes();
   }
 
   get poolBalance(): BigInt {
-    return this._event.parameters[2].value.toBigInt();
+    return this._event.parameters[1].value.toBigInt();
   }
 }
 
@@ -74,6 +70,28 @@ export class MakerSwapsFilledMakerSwapsStruct extends ethereum.Tuple {
   }
 }
 
+export class ReceiverCCIPMessage extends ethereum.Event {
+  get params(): ReceiverCCIPMessage__Params {
+    return new ReceiverCCIPMessage__Params(this);
+  }
+}
+
+export class ReceiverCCIPMessage__Params {
+  _event: ReceiverCCIPMessage;
+
+  constructor(event: ReceiverCCIPMessage) {
+    this._event = event;
+  }
+
+  get messageData(): Bytes {
+    return this._event.parameters[0].value.toBytes();
+  }
+
+  get selector(): Bytes {
+    return this._event.parameters[1].value.toBytes();
+  }
+}
+
 export class TakeSwap extends ethereum.Event {
   get params(): TakeSwap__Params {
     return new TakeSwap__Params(this);
@@ -93,6 +111,31 @@ export class TakeSwap__Params {
 
   get destinationPoolKey(): Bytes {
     return this._event.parameters[1].value.toBytes();
+  }
+}
+
+export class CrossChainSwapper__destinationsResult {
+  value0: BigInt;
+  value1: Address;
+
+  constructor(value0: BigInt, value1: Address) {
+    this.value0 = value0;
+    this.value1 = value1;
+  }
+
+  toMap(): TypedMap<string, ethereum.Value> {
+    let map = new TypedMap<string, ethereum.Value>();
+    map.set("value0", ethereum.Value.fromUnsignedBigInt(this.value0));
+    map.set("value1", ethereum.Value.fromAddress(this.value1));
+    return map;
+  }
+
+  getCcipChainSelector(): BigInt {
+    return this.value0;
+  }
+
+  getSwapper(): Address {
+    return this.value1;
   }
 }
 
@@ -124,32 +167,19 @@ export class CrossChainSwapper__liquidityPoolsResultPoolDataStruct extends ether
   }
 }
 
-export class CrossChainSwapper__liquidityPoolsResultCcipStruct extends ethereum.Tuple {
-  get destinationChainSelector(): BigInt {
-    return this[0].toBigInt();
-  }
-
-  get destinationSwapper(): Address {
-    return this[1].toAddress();
-  }
-}
-
 export class CrossChainSwapper__liquidityPoolsResult {
   value0: BigInt;
   value1: CrossChainSwapper__liquidityPoolsResultQueueDataStruct;
   value2: CrossChainSwapper__liquidityPoolsResultPoolDataStruct;
-  value3: CrossChainSwapper__liquidityPoolsResultCcipStruct;
 
   constructor(
     value0: BigInt,
     value1: CrossChainSwapper__liquidityPoolsResultQueueDataStruct,
-    value2: CrossChainSwapper__liquidityPoolsResultPoolDataStruct,
-    value3: CrossChainSwapper__liquidityPoolsResultCcipStruct
+    value2: CrossChainSwapper__liquidityPoolsResultPoolDataStruct
   ) {
     this.value0 = value0;
     this.value1 = value1;
     this.value2 = value2;
-    this.value3 = value3;
   }
 
   toMap(): TypedMap<string, ethereum.Value> {
@@ -157,7 +187,6 @@ export class CrossChainSwapper__liquidityPoolsResult {
     map.set("value0", ethereum.Value.fromUnsignedBigInt(this.value0));
     map.set("value1", ethereum.Value.fromTuple(this.value1));
     map.set("value2", ethereum.Value.fromTuple(this.value2));
-    map.set("value3", ethereum.Value.fromTuple(this.value3));
     return map;
   }
 
@@ -171,10 +200,6 @@ export class CrossChainSwapper__liquidityPoolsResult {
 
   getPoolData(): CrossChainSwapper__liquidityPoolsResultPoolDataStruct {
     return this.value2;
-  }
-
-  getCcip(): CrossChainSwapper__liquidityPoolsResultCcipStruct {
-    return this.value3;
   }
 }
 
@@ -261,6 +286,39 @@ export class CrossChainSwapper extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBytes());
   }
 
+  destinations(param0: BigInt): CrossChainSwapper__destinationsResult {
+    let result = super.call(
+      "destinations",
+      "destinations(uint256):(uint64,address)",
+      [ethereum.Value.fromUnsignedBigInt(param0)]
+    );
+
+    return new CrossChainSwapper__destinationsResult(
+      result[0].toBigInt(),
+      result[1].toAddress()
+    );
+  }
+
+  try_destinations(
+    param0: BigInt
+  ): ethereum.CallResult<CrossChainSwapper__destinationsResult> {
+    let result = super.tryCall(
+      "destinations",
+      "destinations(uint256):(uint64,address)",
+      [ethereum.Value.fromUnsignedBigInt(param0)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(
+      new CrossChainSwapper__destinationsResult(
+        value[0].toBigInt(),
+        value[1].toAddress()
+      )
+    );
+  }
+
   getRouter(): Address {
     let result = super.call("getRouter", "getRouter():(address)", []);
 
@@ -294,7 +352,7 @@ export class CrossChainSwapper extends ethereum.SmartContract {
   liquidityPools(param0: Bytes): CrossChainSwapper__liquidityPoolsResult {
     let result = super.call(
       "liquidityPools",
-      "liquidityPools(bytes32):(uint256,(uint128,uint128),(address,address,uint64,uint128),(uint64,address))",
+      "liquidityPools(bytes32):(uint256,(uint128,uint128),(address,address,uint64,uint128))",
       [ethereum.Value.fromFixedBytes(param0)]
     );
 
@@ -305,9 +363,6 @@ export class CrossChainSwapper extends ethereum.SmartContract {
       ),
       changetype<CrossChainSwapper__liquidityPoolsResultPoolDataStruct>(
         result[2].toTuple()
-      ),
-      changetype<CrossChainSwapper__liquidityPoolsResultCcipStruct>(
-        result[3].toTuple()
       )
     );
   }
@@ -317,7 +372,7 @@ export class CrossChainSwapper extends ethereum.SmartContract {
   ): ethereum.CallResult<CrossChainSwapper__liquidityPoolsResult> {
     let result = super.tryCall(
       "liquidityPools",
-      "liquidityPools(bytes32):(uint256,(uint128,uint128),(address,address,uint64,uint128),(uint64,address))",
+      "liquidityPools(bytes32):(uint256,(uint128,uint128),(address,address,uint64,uint128))",
       [ethereum.Value.fromFixedBytes(param0)]
     );
     if (result.reverted) {
@@ -332,9 +387,6 @@ export class CrossChainSwapper extends ethereum.SmartContract {
         ),
         changetype<CrossChainSwapper__liquidityPoolsResultPoolDataStruct>(
           value[2].toTuple()
-        ),
-        changetype<CrossChainSwapper__liquidityPoolsResultCcipStruct>(
-          value[3].toTuple()
         )
       )
     );
@@ -555,6 +607,102 @@ export class ConstructorCall_validPoolsStruct extends ethereum.Tuple {
   }
 }
 
+export class AddDestinationCall extends ethereum.Call {
+  get inputs(): AddDestinationCall__Inputs {
+    return new AddDestinationCall__Inputs(this);
+  }
+
+  get outputs(): AddDestinationCall__Outputs {
+    return new AddDestinationCall__Outputs(this);
+  }
+}
+
+export class AddDestinationCall__Inputs {
+  _call: AddDestinationCall;
+
+  constructor(call: AddDestinationCall) {
+    this._call = call;
+  }
+
+  get chainId(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+
+  get _destination(): AddDestinationCall_destinationStruct {
+    return changetype<AddDestinationCall_destinationStruct>(
+      this._call.inputValues[1].value.toTuple()
+    );
+  }
+}
+
+export class AddDestinationCall__Outputs {
+  _call: AddDestinationCall;
+
+  constructor(call: AddDestinationCall) {
+    this._call = call;
+  }
+}
+
+export class AddDestinationCall_destinationStruct extends ethereum.Tuple {
+  get ccipChainSelector(): BigInt {
+    return this[0].toBigInt();
+  }
+
+  get swapper(): Address {
+    return this[1].toAddress();
+  }
+}
+
+export class AddLiquidityPoolCall extends ethereum.Call {
+  get inputs(): AddLiquidityPoolCall__Inputs {
+    return new AddLiquidityPoolCall__Inputs(this);
+  }
+
+  get outputs(): AddLiquidityPoolCall__Outputs {
+    return new AddLiquidityPoolCall__Outputs(this);
+  }
+}
+
+export class AddLiquidityPoolCall__Inputs {
+  _call: AddLiquidityPoolCall;
+
+  constructor(call: AddLiquidityPoolCall) {
+    this._call = call;
+  }
+
+  get _pool(): AddLiquidityPoolCall_poolStruct {
+    return changetype<AddLiquidityPoolCall_poolStruct>(
+      this._call.inputValues[0].value.toTuple()
+    );
+  }
+}
+
+export class AddLiquidityPoolCall__Outputs {
+  _call: AddLiquidityPoolCall;
+
+  constructor(call: AddLiquidityPoolCall) {
+    this._call = call;
+  }
+}
+
+export class AddLiquidityPoolCall_poolStruct extends ethereum.Tuple {
+  get sourceToken(): Address {
+    return this[0].toAddress();
+  }
+
+  get destinationToken(): Address {
+    return this[1].toAddress();
+  }
+
+  get destinationChainId(): BigInt {
+    return this[2].toBigInt();
+  }
+
+  get rate(): BigInt {
+    return this[3].toBigInt();
+  }
+}
+
 export class CancelSwapCall extends ethereum.Call {
   get inputs(): CancelSwapCall__Inputs {
     return new CancelSwapCall__Inputs(this);
@@ -572,24 +720,12 @@ export class CancelSwapCall__Inputs {
     this._call = call;
   }
 
-  get sourceToken(): Address {
-    return this._call.inputValues[0].value.toAddress();
-  }
-
-  get destinationToken(): Address {
-    return this._call.inputValues[1].value.toAddress();
-  }
-
-  get destinationChainId(): BigInt {
-    return this._call.inputValues[2].value.toBigInt();
-  }
-
-  get rate(): BigInt {
-    return this._call.inputValues[3].value.toBigInt();
+  get poolKey(): Bytes {
+    return this._call.inputValues[0].value.toBytes();
   }
 
   get amount(): BigInt {
-    return this._call.inputValues[4].value.toBigInt();
+    return this._call.inputValues[1].value.toBigInt();
   }
 }
 

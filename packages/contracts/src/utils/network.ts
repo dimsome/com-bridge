@@ -18,6 +18,8 @@ export enum Chain {
   fantom = 250,
   gnosis = 100,
   hardhat = 31337,
+  celo = 42220,
+  scroll = 534351,
 }
 
 export const getChain = (hre: HardhatRuntimeEnvironment): Chain => {
@@ -50,6 +52,12 @@ export const getChain = (hre: HardhatRuntimeEnvironment): Chain => {
   }
   if (hre?.network.name === "mumbai") {
     return Chain.mumbai;
+  }
+  if (hre?.network.name === "celo") {
+    return Chain.celo;
+  }
+  if (hre?.network.name === "scroll") {
+    return Chain.scroll;
   }
   return Chain.mainnet;
 };
