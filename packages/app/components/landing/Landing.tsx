@@ -9,12 +9,12 @@ export default function Landing() {
         <h1 className="max-w-3xl text-3xl sm:text-4xl md:text-5xl font-extrabold text-center mb-4 text-primary-500">
           Peer-to-Peer Bridging with Purrrrrrrfect Matching
       </h1>
-      <p className="max-w-xl text-center text-primary-300">
+      <p className="max-w-xl text-center text-primary-50">
           Get matched peer-to-peer for simpler, cheaper bridging
       </p>
-      <p className="mb-16 font-semibold text-primary-300">Get started:</p>
+      <p className="mb-16 font-semibold text-primary-50">Get started:</p>
       <ConnectButton />
-      <h2 className="mt-20 mb-16 text-3xl sm:text-4xl md:text-5xl font-extrabold text-center text-neutral-900">
+      <h2 className="mt-20 mb-16 text-3xl sm:text-4xl md:text-5xl font-extrabold text-center text-primary-50">
         How It Works
       </h2>
       <div className="flex flex-wrap gap-16 md:mx-10 mb-20 justify-center">
@@ -48,14 +48,14 @@ function HowItWorksItem({ number, title, description }: HowItWorksItemProps) {
   return (
     <div className="max-w-[280px] w-full">
       <div className="flex justify-center items-center font-semibold">
-        <span className="text-7xl text-primary-500 font-extrabold mr-4">
+        <span className="text-7xl text-primary-500 font-extrabold mr-4 drop-shadow-[0_0px_2px_rgba(255,255,255,0.8)]">
           {number}.
         </span>
-        <h3 className="text-3xl font-extrabold text-center text-neutral-900">
+        <h3 className="text-3xl font-extrabold text-center text-primary-50">
           {title}{" "}
         </h3>
       </div>
-      <p className="mt-4 text-center text-neutral-900">{description}</p>
+      <p className="mt-4 text-center text-primary-50">{description}</p>
     </div>
   );
 }
