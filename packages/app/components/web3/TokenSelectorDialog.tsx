@@ -138,9 +138,9 @@ export function TokenSelectorFrom({
 
     return (
         <div className="flex flex-col bg-purple-500 rounded-3xl gap-2 text-white p-4">
-            <div className="flex justify-between">
+            <div className="relative">
                 <span className="text-card-title">Select token</span>
-                <button className="hover:text-primary-500 pl-2" onClick={closeModal}>
+                <button className="hover:text-primary-500 p-2 absolute -top-2 -right-2" onClick={closeModal}>
                     <BsX/>
                 </button>
             </div>
