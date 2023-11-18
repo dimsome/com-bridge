@@ -18,7 +18,7 @@ export function useBlockExplorer() {
             return 'https://sepolia.etherscan.io'
         } else if (chain?.id === 80001) {
             return 'https://mumbai.polygonscan.com'
-        } else if (chain?.id === 421611) {
+        } else if (chain?.id === 421613) {
             return 'https://testnet.arbiscan.io'
         }
     }, [chain?.id])

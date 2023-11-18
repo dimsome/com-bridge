@@ -17,7 +17,7 @@ import {
     useContractWrite,
     useNetwork,
     usePrepareContractWrite,
-    useSwitchNetwork, useToken, useWaitForTransaction
+    useSwitchNetwork, useWaitForTransaction
 } from "wagmi";
 import useContractAddresses from "@/src/hooks/useContractAddresses";
 import {HandleOrderButton} from "@/components/home/HandleOrderButton";
@@ -44,20 +44,19 @@ export const CreateOrderForm = () => {
     }, [chain?.id, resetData]);
 
 
-
     return <Card>
         <div className="flex justify-between">
             <span>Bridge token</span>
-            <div className="flex gap-4">
-                <ToggleButton selected={true} onClick={() => {
-                }}>
-                    Make
-                </ToggleButton>
-                <ToggleButton selected={false} onClick={() => {
-                }}>
-                    Take
-                </ToggleButton>
-            </div>
+            {/*<div className="flex gap-4">*/}
+            {/*    <ToggleButton selected={true} onClick={() => {*/}
+            {/*    }}>*/}
+            {/*        Make*/}
+            {/*    </ToggleButton>*/}
+            {/*    <ToggleButton selected={false} onClick={() => {*/}
+            {/*    }}>*/}
+            {/*        Take*/}
+            {/*    </ToggleButton>*/}
+            {/*</div>*/}
         </div>
         <Separator/>
         <div
