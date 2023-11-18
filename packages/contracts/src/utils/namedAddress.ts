@@ -55,7 +55,7 @@ export const resolveName = (
   } else if (chain === Chain.arbitrumGoerli) {
     switch (contractName) {
       case "CrossChainSwapper":
-        return "0x4a3C098D5D1422574015A55d7ad9Cf904226a2e6";
+        return "0x960FC1ae497D33E798e0bfc3eB37Ef746cef53cD";
       case "CCIP_Router":
         return "0x88E492127709447A5ABEFdaB8788a15B4567589E";
       case "CCIP_ChainSelector":
@@ -67,7 +67,7 @@ export const resolveName = (
   } else if (chain === Chain.mumbai) {
     switch (contractName) {
       case "CrossChainSwapper":
-        return "0xFfC3b028e159C1d3A5a9d158f3bc60ABE76F92cB";
+        return "0x49Bc3d55c3774aBb1210cA72bFCd6dCcA466f31f";
       case "CCIP_Router":
         return "0x70499c328e1e2a3c41108bd3730f6670a44595d1";
       case "CCIP_ChainSelector":

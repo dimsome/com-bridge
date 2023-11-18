@@ -38,9 +38,7 @@ subtask("ccs-deposit", "Deposits Meow in the Cross Chain Swapper contract")
     log(
       `About to deposit ${taskArgs.amount} ${token.symbol} into CrossChainSwapper with address ${swapperAddress}`
     );
-    const tx = await swapper.deposit(token.address, amountBN, {
-      gasLimit: 1000000,
-    });
+    const tx = await swapper.deposit(token.address, amountBN);
     await logTxDetails(
       tx,
       `deposit ${taskArgs.amount} ${token.symbol} into CrossChainSwapper with address ${swapperAddress}`
@@ -70,9 +68,9 @@ subtask("ccs-make-swap", "Maker creates a swap")
 
     log(`About to create swap for ${taskArgs.amount} Meow`);
     const tx = await swapper.makeSwap(
-      sMeow.address,
-      fMeow.address,
-      Chain.fuji,
+      chain === Chain.sepolia ? sMeow.address : mMeow.address,
+      chain === Chain.sepolia ? fMeow.address : agMeow.address,
+      chain === Chain.sepolia ? Chain.fuji : Chain.arbitrumGoerli,
       rate,
       amountBN
     );
@@ -107,9 +105,9 @@ subtask("ccs-take-swap", "Taker matches a swap")
       `About to take swap for ${taskArgs.amount} Meow against Swapper ${swapperAddress}`
     );
     const tx = await swapper.takeSwap(
-      fMeow.address,
-      sMeow.address,
-      Chain.sepolia,
+      chain === Chain.fuji ? fMeow.address : agMeow.address,
+      chain === Chain.fuji ? sMeow.address : mMeow.address,
+      chain === Chain.fuji ? Chain.sepolia : Chain.mumbai,
       rate,
       amountBN,
       { gasLimit: 1000000 }
@@ -205,7 +203,7 @@ subtask("ccs-deploy", "Deploys a new Cross Chain Swapper contract").setAction(
         {
           sourceToken: mMeow.address,
           destinationToken: agMeow.address,
-          destinationChainId: Chain.mumbai,
+          destinationChainId: Chain.arbitrumGoerli,
           rate: parseEther("1"),
         },
       ];
@@ -214,7 +212,7 @@ subtask("ccs-deploy", "Deploys a new Cross Chain Swapper contract").setAction(
         {
           sourceToken: agMeow.address,
           destinationToken: mMeow.address,
-          destinationChainId: Chain.arbitrumGoerli,
+          destinationChainId: Chain.mumbai,
           rate: parseEther("1"),
         },
       ];

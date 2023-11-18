@@ -186,7 +186,7 @@ yarn task ccs-take-swap --amount 7 --token meow --network fuji
 
 ## Proof of CCIP messages
 
-https://ccip.chain.link/tx/0xbd028151febc88d8c61479efe0eea6330b6f91507725f9930acdc6e47c628a22
+https://ccip.chain.link/tx/0x338088aee89d9c20ebae138062b33f0b61f344b992e5753e9f89e7fec9dd9124
 
 Avalanche Fuji side sending a CCIP message with the taker swap.
 
