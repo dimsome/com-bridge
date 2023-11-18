@@ -1,30 +1,33 @@
-import { Chain } from './network';
+import { Chain } from "./network";
 
-export const contractNames = [
-  'EntryPoint',
-  'StackupPaymaster',
-  'StackupBundler',
-  'DexWallet',
-  'DexWalletFactory',
-  'SimpleAccountFactory',
-  'SimpleAccount',
-  'AbstractAccount',
-] as const;
+export const contractNames = ["CrossChainSwapper", "CCIP_Router"] as const;
 export type ContractNames = (typeof contractNames)[number];
 
-export const resolveNamedAddress = (contractName: ContractNames, chain: Chain): string | undefined => {
+export const resolveNamedAddress = (
+  contractName: ContractNames,
+  chain: Chain
+): string | undefined => {
   // Common addresses across all chains
-  switch (contractName) {
-    case 'EntryPoint':
-      return '0x0576a174D229E3cFA37253523E645A78A0C91B57';
-    default:
-  }
 
   // Chain specific addresses
   if (chain === Chain.mainnet) {
     switch (contractName) {
-      case 'StackupPaymaster':
-        return '0x6087C019C9495139AD9ED230173e8681DEe3FFF2';
+      case "CrossChainSwapper":
+        return "";
+      default:
+    }
+  } else if (chain === Chain.sepolia) {
+    switch (contractName) {
+      case "CrossChainSwapper":
+        return "0x57509d4aB51940829C496c740538883Fdfae2223";
+      case "CCIP_Router":
+        return "0xd0daae2231e9cb96b94c8512223533293c3693bf";
+      default:
+    }
+  } else if (chain === Chain.fuji) {
+    switch (contractName) {
+      case "CrossChainSwapper":
+        return "0x57509d4aB51940829C496c740538883Fdfae2223";
       default:
     }
   }

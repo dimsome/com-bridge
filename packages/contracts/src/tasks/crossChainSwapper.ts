@@ -7,38 +7,62 @@ import { logger } from "../utils/logger";
 import { getSigner } from "../utils/signer";
 import { deployContract, logTxDetails } from "../utils/transaction";
 import { Chain, getChain } from "../utils/network";
+import { fMeow, sMeow } from "../utils/tokens";
+import { resolveNamedAddress } from "../utils/namedAddress";
+import { resolveAssetToken } from "../utils/resolvers";
 
 const log = logger("task:ccs");
 
-subtask("ccs-deploy", "Deploys a new Cross Chain Swapper contract")
-  .addOptionalParam(
-    "speed",
-    "Defender Relayer speed param: 'safeLow' | 'average' | 'fast' | 'fastest'",
-    "fast",
-    types.string
-  )
-  .setAction(async (taskArgs, hre) => {
-    const { speed, name, symbol, decimals, supply } = taskArgs;
-    const signer = await getSigner(hre, speed);
+subtask(
+  "ccs-deposit",
+  "Deposits Meow in the Cross Chain Swapper contract"
+).setAction(async (taskArgs, hre) => {
+  const signer = await getSigner(hre);
+  const chain = await getChain(hre);
+
+  const swapperAddress = await resolveNamedAddress("CrossChainSwapper", chain);
+});
+task("ccs-deposit").setAction(async (_, __, runSuper) => {
+  return runSuper();
+});
+
+subtask("ccs-deploy", "Deploys a new Cross Chain Swapper contract").setAction(
+  async (taskArgs, hre) => {
+    const signer = await getSigner(hre);
     const chain = await getChain(hre);
 
-    let constructorArguments = [];
-
+    let liquidityPools = [];
     if (chain === Chain.sepolia) {
-      const liquidityPools = [
+      liquidityPools = [
         {
-          sourceToken: "0x4a3C098D5D1422574015A55d7ad9Cf904226a2e6",
-          destinationToken: "0x2237e5dee801a432965210933c1F26696565303d",
+          sourceToken: sMeow.address,
+          destinationToken: fMeow.address,
           destinationChainId: Chain.fuji, // Avalanche Fuji
           rate: parseEther("1"),
         },
       ];
-      constructorArguments = [chain, liquidityPools];
+    } else if (chain === Chain.fuji) {
+      liquidityPools = [
+        {
+          sourceToken: fMeow.address,
+          destinationToken: sMeow.address,
+          destinationChainId: Chain.sepolia,
+          rate: parseEther("1"),
+        },
+      ];
     }
+
+    const linkToken = await resolveAssetToken(signer, chain, "Link");
+    const constructorArguments = [
+      chain,
+      liquidityPools,
+      resolveNamedAddress("CCIP_Router", chain),
+      linkToken.address,
+    ];
     log(`About to deploy CrossChainSwapper contract on ${chain}`);
     const crossChainSwapper = await deployContract(
       new CrossChainSwapper__factory(signer),
-      `Cross Chain Swapper to  ${chain}`,
+      `Cross Chain Swapper to ${chain}`,
       constructorArguments
     );
 
@@ -47,7 +71,8 @@ subtask("ccs-deploy", "Deploys a new Cross Chain Swapper contract")
       constructorArguments,
     });
     return crossChainSwapper;
-  });
+  }
+);
 task("ccs-deploy").setAction(async (_, __, runSuper) => {
   return runSuper();
 });
