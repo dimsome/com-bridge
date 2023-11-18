@@ -1,9 +1,10 @@
 import {Address, useAccount, useContractRead} from "wagmi";
 import {crossChainSwapperABI} from "@/abi/CrossChainSwapperABI";
 import useContractAddresses from "@/src/hooks/useContractAddresses";
-import {useEffect} from "react";
+import {useMemo} from "react";
 
 export type MakerSwapData = {
+    maker: Address,
     amount: bigint,
     destinationChainId: bigint,
     destinationToken: Address,
@@ -13,19 +14,16 @@ export type MakerSwapData = {
 export const useMakerSwaps = () => {
     const { address } = useAccount()
     const addresses = useContractAddresses()
-    const {data, isLoading} = useContractRead({
+    const {data, isLoading, refetch} = useContractRead({
         abi: crossChainSwapperABI,
         address: addresses.Swapper,
-        functionName: 'userMakerSwaps',
-        args: [address],
-        enabled: !!address
+        functionName: 'allMakerSwaps',
     })
 
-    useEffect(() => {
-        console.log(data)
-    }, [data]);
+    const filteredData = useMemo(() => ((data??[]) as MakerSwapData[]).filter(value => value.maker == address), [address, data]);
     return {
-        data: data as MakerSwapData[],
-        isLoading
+        data: filteredData,
+        isLoading,
+         refetch
     }
 }
