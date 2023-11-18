@@ -1,4 +1,4 @@
-import { parseEther } from "ethers/lib/utils";
+import { parseUnits, parseEther } from "ethers/lib/utils";
 import { subtask, task, types } from "hardhat/config";
 
 import { CrossChainSwapper__factory } from "../types/typechain";
@@ -13,15 +13,36 @@ import { resolveAssetToken } from "../utils/resolvers";
 
 const log = logger("task:ccs");
 
-subtask(
-  "ccs-deposit",
-  "Deposits Meow in the Cross Chain Swapper contract"
-).setAction(async (taskArgs, hre) => {
-  const signer = await getSigner(hre);
-  const chain = await getChain(hre);
+subtask("ccs-deposit", "Deposits Meow in the Cross Chain Swapper contract")
+  .addParam("amount", "Amount to deposit.", undefined, types.float)
+  .addOptionalParam(
+    "token",
+    "Token symbol or address. eg Meow",
+    "Meow",
+    types.string
+  )
+  .setAction(async (taskArgs, hre) => {
+    const signer = await getSigner(hre);
+    const chain = await getChain(hre);
 
-  const swapperAddress = await resolveNamedAddress("CrossChainSwapper", chain);
-});
+    const swapperAddress = await resolveNamedAddress(
+      "CrossChainSwapper",
+      chain
+    );
+    const swapper = CrossChainSwapper__factory.connect(swapperAddress, signer);
+
+    const token = await resolveAssetToken(signer, chain, taskArgs.token);
+    const amountBN = parseUnits(taskArgs.amount.toString(), token.decimals);
+
+    log(
+      `About to deposit ${taskArgs.amount} ${token.symbol} into CrossChainSwapper with address ${swapperAddress}`
+    );
+    const tx = await swapper.deposit(token.address, amountBN);
+    await logTxDetails(
+      tx,
+      `deposit ${taskArgs.amount} ${token.symbol} into CrossChainSwapper with address ${swapperAddress}`
+    );
+  });
 task("ccs-deposit").setAction(async (_, __, runSuper) => {
   return runSuper();
 });
