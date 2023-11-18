@@ -5,6 +5,7 @@
   "main": "index.js",
   "author": "CoM",
   "license": "MIT",
+  "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",

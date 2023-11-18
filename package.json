@@ -4,11 +4,12 @@
   "description": "Just Miau",
   "author": "COM-Team",
   "license": "MIT",
+  "private": true,
   "engines": {
     "node": ">=18.0.0"
   },
   "workspaces": [
-    "packages/apps"
+    "packages/app"
   ],
   "scripts": {
     "start:contracts": "yarn workspace packs-contracts run start",

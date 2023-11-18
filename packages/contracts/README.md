@@ -31,6 +31,20 @@ Token Swap
 
 # Contract Deployments
 
+## TODO: Deployments
+
+| Network               | Requirements                              | Status |
+| --------------------- | ----------------------------------------- | ------ |
+| Arbitrum Goerli       | Deploy and verify contracts               | TODO   |
+| Polygon zkEVM Testnet | Deploy and verify contracts               | TODO   |
+| Linea testnet         | Deploy and verify contracts               | TODO   |
+| Celo testnet          | Deploy and verify contracts               | TODO   |
+| Mantle testnet        | Deploy and verify contracts               | TODO   |
+| Scroll testnet        | Deploy and verify contracts               | TODO   |
+| Gnosischain testnet   | Deploy and verify contracts, nice to have | TODO   |
+
+## Current Deployments
+
 | Chain         | Meow Token                                                                                                                    | Cross Chain Swapper                                                                                                           |
 | ------------- | ----------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
 | Sepolia       | [0x84d7F52cAF3C4A4EAdC998FD102fD23134159495](https://sepolia.etherscan.io/address/0x84d7F52cAF3C4A4EAdC998FD102fD23134159495) | [0x5369B69810E7e682dc2ce04C9dF972Aa61887Fdc](https://sepolia.etherscan.io/address/0x5369B69810E7e682dc2ce04C9dF972Aa61887Fdc) |
