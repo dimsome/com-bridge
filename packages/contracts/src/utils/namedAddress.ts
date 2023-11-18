@@ -5,6 +5,8 @@ export const contractNames = [
   "CCIP_Router",
   "CCIP_ChainSelector",
   "SelectorLib",
+  "Dimitri",
+  "Adam",
 ] as const;
 export type ContractNames = (typeof contractNames)[number];
 
@@ -13,18 +15,23 @@ export const resolveName = (
   chain: Chain
 ): string | undefined => {
   // Common addresses across all chains
+  switch (contractName) {
+    case "Dimitri":
+      return "0xD5fC6be6dA120227E5ACB5B6c1006A892b85BB32";
+    case "Adam":
+      return "0x589F6Cc29e9a08db99ab6896B2Fb3BBE28245233";
+    default:
+  }
 
   // Chain specific addresses
   if (chain === Chain.mainnet) {
     switch (contractName) {
-      case "CrossChainSwapper":
-        return "";
       default:
     }
   } else if (chain === Chain.sepolia) {
     switch (contractName) {
       case "CrossChainSwapper":
-        return "0xAfA51D88Bb07f668129526390dB4D20D84dAbB16";
+        return "0xbE297B899dB97A161BD24058daB8751510951BB7";
       case "CCIP_Router":
         return "0xd0daae2231e9cb96b94c8512223533293c3693bf";
       case "CCIP_ChainSelector":
@@ -36,7 +43,7 @@ export const resolveName = (
   } else if (chain === Chain.fuji) {
     switch (contractName) {
       case "CrossChainSwapper":
-        return "0xad3482704e34567b7AAEe584A7d47cCDaff30E5A";
+        return "0xa47fBe44E10000F27Eb64698720AFA1bc6C50582";
       case "CCIP_Router":
         return "0x554472a2720e5e7d5d3c817529aba05eed5f82d8";
       case "CCIP_ChainSelector":

@@ -104,13 +104,15 @@ contract CrossChainSwapper is CCIPReceiver {
     ****************************************/
 
     function deposit(address token, uint256 amount) external {
+        _deposit(token, amount);
+    }
+
+    function _deposit(address token, uint256 amount) internal {
         // Check the token is valid
         if (!validSourceTokens[token]) revert InvalidToken();
         if (amount == 0 || amount > type(uint128).max) revert InvalidAmount();
-
         // Transfer the token from the user to this Swapper contract
         IERC20(token).safeTransferFrom(msg.sender, address(this), amount);
-
         userBalances[msg.sender][token].unlocked += uint128(amount);
     }
 
@@ -120,9 +122,7 @@ contract CrossChainSwapper is CCIPReceiver {
         if (amount == 0 || amount >= type(uint128).max) revert InvalidAmount();
         if (amount > userBalances[msg.sender][token].unlocked)
             revert NotEnoughUnlockedTokens();
-
         userBalances[msg.sender][token].unlocked -= uint128(amount);
-
         // Transfer the token from the user to this Swapper contract
         IERC20(token).safeTransferFrom(msg.sender, address(this), amount);
     }
@@ -138,6 +138,9 @@ contract CrossChainSwapper is CCIPReceiver {
         uint256 rate,
         uint256 amount
     ) external {
+        // Adding this step here to make it easier to demo
+        _deposit(sourceToken, amount);
+
         bytes32 poolKey = calcPoolKey(
             sourceToken,
             destinationToken,
@@ -146,17 +149,14 @@ contract CrossChainSwapper is CCIPReceiver {
         );
         // Check the poolId is valid
         if (!validPools[poolKey]) revert InvalidPool();
-
         // Check the maker has enough unlocked tokens
         UserBalances memory userBalance = userBalances[msg.sender][sourceToken];
         if (userBalance.unlocked < amount) revert NotEnoughUnlockedTokens();
-
         // lock maker's tokens so they can't be withdrawn or transferred
         userBalances[msg.sender][sourceToken] = UserBalances(
             uint128(userBalance.locked + amount),
             uint128(userBalance.unlocked - amount)
         );
-
         // add swap to the liquidity pool
         LiquidityPool storage liquidityPool = liquidityPools[poolKey];
         liquidityPool.balance += amount;
@@ -166,7 +166,6 @@ contract CrossChainSwapper is CCIPReceiver {
             amount
         );
         liquidityPool.queueData.last = lastQueueItem;
-
         // emit event to be picked up by a market taker
         emit MakeSwap(poolKey, liquidityPool.balance);
     }
@@ -174,22 +173,18 @@ contract CrossChainSwapper is CCIPReceiver {
     function cancelSwap(bytes32 poolKey, uint256 amount) external {
         // Check the poolId is valid
         if (!validPools[poolKey]) revert InvalidPool();
-
         LiquidityPoolData memory liquidityPool = liquidityPools[poolKey]
             .poolData;
-
         // Check the maker has enough locked tokens
         UserBalances memory userBalance = userBalances[msg.sender][
             liquidityPool.sourceToken
         ];
         if (userBalance.locked < amount) revert NotEnoughLockedTokens();
-
         // unlock maker's tokens so they can't be withdrawn or transferred
         userBalances[msg.sender][liquidityPool.sourceToken] = UserBalances(
             uint128(userBalance.locked - amount),
             uint128(userBalance.unlocked + amount)
         );
-
         // TODO loop through the maker queue and remove/update the maker swaps
     }
 
@@ -200,10 +195,12 @@ contract CrossChainSwapper is CCIPReceiver {
         uint256 rate,
         uint256 amount
     ) external {
+        // Adding this step here to make it easier to demo
+        _deposit(sourceToken, amount);
+
         // Check the taker has enough unlocked tokens
         UserBalances memory userBalance = userBalances[msg.sender][sourceToken];
         if (userBalance.unlocked < amount) revert NotEnoughUnlockedTokens();
-
         bytes32 poolKey = calcPoolKey(
             sourceToken,
             destinationToken,
@@ -212,13 +209,11 @@ contract CrossChainSwapper is CCIPReceiver {
         );
         // Check the liquidity pool is valid
         if (!validPools[poolKey]) revert InvalidPool();
-
         // lock taker's tokens so they can't be withdrawn
         userBalances[msg.sender][sourceToken] = UserBalances(
             uint128(userBalance.locked + amount),
             uint128(userBalance.unlocked - amount)
         );
-
         bytes32 destinationPoolKey = calcPoolKey(
             destinationToken,
             sourceToken,
@@ -228,7 +223,6 @@ contract CrossChainSwapper is CCIPReceiver {
         );
         uint256 destinationAmount = (amount * RATE_SCALE) / rate;
         // TODO check no in-progress settlement with destination liquidity pool
-
         LiquidityPool storage sourceLiquidityPool = liquidityPools[poolKey];
         _sendTakeSwapViaCCIP(
             sourceLiquidityPool,
@@ -333,7 +327,6 @@ contract CrossChainSwapper is CCIPReceiver {
     ) external view returns (MakerSwap[] memory makerSwaps_) {
         // add swap to the liquidity pool
         LiquidityPool storage liquidityPool = liquidityPools[poolKey];
-
         QueueMetaData memory queueData = liquidityPool.queueData;
         uint256 makerQueueLength = queueData.last + 1 - queueData.next;
         makerSwaps_ = new MakerSwap[](makerQueueLength);
@@ -464,13 +457,13 @@ contract CrossChainSwapper is CCIPReceiver {
         uint256 linkBalance = IERC20(linkToken).balanceOf(address(this));
         if (fees > linkBalance) revert NotEnoughLink(linkBalance, fees);
 
-        // // Send the message through the router and store the returned message ID
-        // bytes32 messageId = IRouterClient(i_router).ccipSend(
-        //     destination.ccipChainSelector,
-        //     ccipMessage
-        // );
+        // Send the message through the router and store the returned message ID
+        bytes32 messageId = IRouterClient(i_router).ccipSend(
+            destination.ccipChainSelector,
+            ccipMessage
+        );
 
-        // emit MakerSwaps(messageId, destinationPoolKey, filledMakerSwaps);
+        emit MakerSwaps(messageId, destinationPoolKey, filledMakerSwaps);
     }
 
     function _ccipReceive(
@@ -488,7 +481,8 @@ contract CrossChainSwapper is CCIPReceiver {
             );
             _settleMaker(poolKey, takerAmount);
         }
-        if (selector == 0x00000) {
+        // if (selector == 0x00000) {
+        else {
             // maker(bytes32,uint256,MakerSwap[]) encoded message
             (
                 bytes32 poolKey,
