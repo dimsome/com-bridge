@@ -98,13 +98,16 @@ subtask("ccs-take-swap", "Taker matches a swap")
     const amountBN = parseUnits(taskArgs.amount.toString(), sMeow.decimals);
     const rate = parseUnits("1", sMeow.decimals);
 
-    log(`About to create swap for ${taskArgs.amount} Meow`);
+    log(
+      `About to take swap for ${taskArgs.amount} Meow against Swapper ${swapperAddress}`
+    );
     const tx = await swapper.takeSwap(
       fMeow.address,
       sMeow.address,
       Chain.sepolia,
       rate,
-      amountBN
+      amountBN,
+      { gasLimit: 5000000 }
     );
     await logTxDetails(
       tx,

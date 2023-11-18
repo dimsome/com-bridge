@@ -57,11 +57,16 @@ yarn task token-transfer --token meow --amount 100000  --recipient 0x589F6Cc29e9
 
 # Deploy the CrossChainSwapper
 yarn task ccs-deploy --network fuji
+# Send the Swapper some Link to pay for CCIP
+yarn task token-transfer --token Link --amount 1  --recipient CrossChainSwapper --network fuji
 
 ## Sepolia
 
 # Deploy the CrossChainSwapper
 yarn task ccs-deploy --network sepolia
+# Send the Swapper some Link to pay for CCIP
+yarn task token-transfer --token Link --amount 1  --recipient CrossChainSwapper --network sepolia
+
 # Set the Avalanche Fuji destination details
 yarn task ccs-dest --chain-id 43113 --network sepolia
 
@@ -89,6 +94,12 @@ yarn task ccs-make-swap --amount 8 --token meow --network sepolia
 ## Avalanche Fuji
 
 # Taker matches the swap
+# yarn task ccs-deploy --network fuji
+# yarn task token-transfer --token Link --amount 3  --recipient CrossChainSwapper --network fuji
+# yarn task ccs-dest --chain-id 11155111 --network fuji
 yarn task ccs-take-swap --amount 8 --token meow --network fuji
 
+# yarn task:fork ccs-take-swap --amount 8 --token meow --network fuji
+
+f
 ```

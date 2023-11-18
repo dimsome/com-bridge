@@ -1,5 +1,5 @@
-import config from "./hardhat-fork.config"
+import config from "./hardhat-fork.config";
 
-import "./src/tasks"
+import "./src/tasks";
 
-export default config
+export default config;

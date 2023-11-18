@@ -33,7 +33,7 @@ export const resolveName = (
   } else if (chain === Chain.fuji) {
     switch (contractName) {
       case "CrossChainSwapper":
-        return "0x4a3C098D5D1422574015A55d7ad9Cf904226a2e6";
+        return "0x30041062cFE969d7240591f0dDd1A47a976eb73D";
       case "CCIP_Router":
         return "0x554472a2720e5e7d5d3c817529aba05eed5f82d8";
       case "CCIP_ChainSelector":

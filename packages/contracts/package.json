@@ -26,6 +26,7 @@
     "hh:fork": "npx hardhat node --config hardhat-fork.config.ts",
     "task": "yarn hardhat --config tasks.config.ts --typecheck",
     "task:fork": "yarn hardhat --config tasks-fork.config.ts --typecheck",
+    "task:fork:fuji": "yarn hardhat --config tasks-fork-fuji.config.ts --typecheck",
     "test": "yarn hardhat test ./test/unit/*.spec.ts --typecheck",
     "test:fork": "yarn hardhat --config hardhat-fork.config.ts test ./test/fork/**/*.spec.ts --typecheck",
     "test:file:fork": "yarn hardhat --config hardhat-fork.config.ts test --typecheck",

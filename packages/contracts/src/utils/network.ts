@@ -42,7 +42,10 @@ export const getChain = (hre: HardhatRuntimeEnvironment): Chain => {
   if (hre?.network.name === "sepolia") {
     return Chain.sepolia;
   }
-  if (hre?.network.name === "fuji") {
+  if (
+    hre?.network.name === "fuji" ||
+    hre?.hardhatArguments?.config === "tasks-fork-fuji.config.ts"
+  ) {
     return Chain.fuji;
   }
   if (hre?.network.name === "mumbai") {
