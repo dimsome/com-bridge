@@ -2,15 +2,19 @@
     <img width="33%" src="https://raw.githubusercontent.com/dimsome/com-bridge/main/ChillCat.png"> 
 </p>
 
-# CoM Repo for ETHGlobal Istanbul 2023 Hackathon
+# Coincidence of Moew (CoM) Repo
 
-Coincidence of Moew (CoM), a cross-chain token swap protocol with Peer-to-Peer (P2P) matching with 1:1 price ratio.
+> for ETHGlobal Istanbul 2023 Hackathon
 
-Basically like CoW-Swap, but cross-chain.
+Coincidence of Moew (CoM), a cross-chain token swap protocol in a Peer-to-Peer (P2P) matching flow and with 1:1 price ratio.
+
+Basically like CoW-Swap, but for cross-chain bridging.
 
 ## Problem
 
-With the omnipresence of Layer 2s and other chains, their low gas prices are a significant advantage. However, bridging assets between Layer 2s remains a costly affair. Simultaneously, funds are consistently moving in both directions.
+With the omnipresence of Layer 2s and other chains, their low gas prices are a significant advantage. However, bridging assets between Layer 2s remains a costly affair. Simultaneously, funds are consistently moving in both directions and yet are using a third party pool or liquidity provider.
+
+Why not explore this opportunity for a better matching flow?
 
 ## Solution
 
