@@ -8,9 +8,11 @@ import {InfoItem} from "@/components/content/InfoItem";
 import Button from "@/components/button/Button";
 import {toast} from "react-toastify";
 import {Card} from "@/components/Card";
-import React from "react";
+import React, {useEffect, useState} from "react";
+import {useNetwork, useSwitchNetwork} from "wagmi";
 
 export const CreateOrderForm = () => {
+
     return <Card>
         <div className="flex justify-between">
             <span>Bridge token</span>
@@ -33,12 +35,7 @@ export const CreateOrderForm = () => {
         >
             <div className="text-sm text-gray-400">
                 From:{" "}
-                <ChainSelector
-                    className="text-white"
-                    onChainSelected={(chain) => {
-                    }}
-                    selectedChainId={undefined}
-                />
+                <FromChainSelector/>
             </div>
             <div className="border-b border-neutral-600"></div>
             <TokenInput
@@ -88,4 +85,23 @@ export const CreateOrderForm = () => {
             Create Order
         </Button>
     </Card>
+}
+
+
+const FromChainSelector = () => {
+    const {chain} = useNetwork();
+    const [selectedChain, setSelectedChain] = useState(chain)
+    const {switchNetwork} = useSwitchNetwork({ chainId: selectedChain?.id})
+    useEffect(() => {
+        if (chain?.id != selectedChain?.id && chain?.id && selectedChain?.id) {
+            switchNetwork && switchNetwork(selectedChain?.id);
+        }
+    }, [chain?.id, selectedChain?.id])
+    return <ChainSelector
+        className="text-white"
+        onChainSelected={(chain) => {
+            setSelectedChain(chain)
+        }}
+        selectedChainId={chain?.id}
+    />
 }
