@@ -5,11 +5,13 @@ import {Separator} from "@/components/misc/Separator";
 import Image from "next/image";
 import {ChainImage} from "@/components/chainSelector/ChainImage";
 import ChainArrow from "~/chain_arrow.svg";
+import {useMakerSwaps} from "@/src/hooks/useMakerSwaps";
 
 type OrderListProps = {
     className?: string;
 }
 export const OrderList = ({className}: OrderListProps) => {
+    const {data, isLoading} = useMakerSwaps();
     return <Card>
         <div className="flex justify-between">
             <span>Your orders</span>

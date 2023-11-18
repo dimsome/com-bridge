@@ -6,6 +6,8 @@ import {useTakeSwap} from "@/src/hooks/useTakeSwap";
 import React, {useEffect} from "react";
 import {toast} from "react-toastify";
 import {Address, Chain} from "wagmi";
+import useSound from "use-sound";
+import {emitOrderDone} from "@/components/events/events";
 
 type HandleOrderButtonProps = {
     destinationChain: Chain,
@@ -47,11 +49,16 @@ const CreateOrderButton = ({destinationChain, token, amount, destinationToken}: 
         token: token!,
         amount: amount!
     })
+
+
+    const [play] = useSound('/placeOrder.mp3')
     useEffect(() => {
         if (isSuccess) {
+            play()
+            emitOrderDone()
             toast.success('Order has been created', {autoClose: 3000})
         }
-    }, [isSuccess]);
+    }, [isSuccess, play]);
 
     return <Button variant="CTA" isLoading={isLoading} className="w-full mt-4" onClick={() => write && write()}>
         Create Order
@@ -64,11 +71,14 @@ const TakeOrderButton = ({destinationChain, token, amount, disable, destinationT
         token: token!,
         amount: amount!
     })
+    const [play] = useSound('/placeOrder.mp3')
     useEffect(() => {
         if (isSuccess) {
+            play()
+            emitOrderDone()
             toast.success('Order has been Executed', {autoClose: 3000})
         }
-    }, [isSuccess]);
+    }, [isSuccess, play]);
 
 
     return <Button variant="CTA" disabled={disable} isLoading={isLoading} className="w-full mt-4" onClick={() => write && write()}>

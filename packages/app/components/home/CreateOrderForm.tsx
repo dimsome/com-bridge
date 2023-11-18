@@ -19,11 +19,9 @@ import {
     usePrepareContractWrite,
     useSwitchNetwork, useToken, useWaitForTransaction
 } from "wagmi";
-import useContractAddresses, {getAddressesByChainId} from "@/src/hooks/useContractAddresses";
-import {useMakeSwap} from "@/src/hooks/useMakeSwap";
-import {useTakeSwap} from "@/src/hooks/useTakeSwap";
-import {useMatchingOrderValue} from "@/src/hooks/useMatchingOrderValue";
+import useContractAddresses from "@/src/hooks/useContractAddresses";
 import {HandleOrderButton} from "@/components/home/HandleOrderButton";
+import {useOrderDoneListener} from "@/components/events/events";
 
 export const CreateOrderForm = () => {
     const {chain} = useNetwork();
@@ -38,6 +36,9 @@ export const CreateOrderForm = () => {
         setAmount(undefined);
     },[])
 
+    useOrderDoneListener(() => {
+      resetData();
+    })
     useEffect(() => {
       resetData();
     }, [chain?.id, resetData]);
@@ -137,7 +138,6 @@ const ActionButton = ({destinationChain, token, amount}: ActionProps & { take: b
         address: token,
         args: [address!, addresses.Swapper],
         staleTime: 5,
-        watch: true,
         enabled: !!token
     },)
 
@@ -153,7 +153,7 @@ const ActionButton = ({destinationChain, token, amount}: ActionProps & { take: b
         </Button>
     }
     if ((dataAllowance ?? 0n) < (amount ?? 0)) {
-        return <ApproveButton token={token!} amount={amount!}/>
+        return <ApproveButton token={token!} amount={amount!} onDone={() => refetch()}/>
     }
 
 
@@ -164,7 +164,7 @@ const ActionButton = ({destinationChain, token, amount}: ActionProps & { take: b
 }
 
 
-const ApproveButton = ({token, amount}: { token: Address, amount: bigint }) => {
+const ApproveButton = ({token, amount, onDone}: { token: Address, amount: bigint, onDone: ()=>void }) => {
     const addresses = useContractAddresses();
     const {config} = usePrepareContractWrite({
         abi: erc20ABI,
@@ -175,7 +175,12 @@ const ApproveButton = ({token, amount}: { token: Address, amount: bigint }) => {
     })
     const {data, write, isLoading: isWriteLoading} = useContractWrite(config!);
 
-    const {isLoading} = useWaitForTransaction({hash: data?.hash, enabled: !!data?.hash});
+    const {isLoading, isSuccess} = useWaitForTransaction({hash: data?.hash, enabled: !!data?.hash});
+    useEffect(() => {
+        if (!isLoading && isSuccess) {
+            onDone()
+        }
+    }, [isLoading, isSuccess, onDone]);
     return <Button
         isLoading={isLoading || isWriteLoading}
         variant="CTA" className="w-full mt-4" onClick={() => write && write()}>

@@ -11,7 +11,7 @@ type UseMakeSwapProps = {
     amount: bigint,
 }
 export const useMakeSwap = ({destinationChainId, token, destinationToken, amount}: UseMakeSwapProps) => {
-   const addresses = useContractAddresses();
+    const addresses = useContractAddresses();
     const {data: tokenData} = useToken({address: token})
     //TODO move fee outside of this hook:
     const fee = parseUnits('1', tokenData?.decimals ?? 18);
