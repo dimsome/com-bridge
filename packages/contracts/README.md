@@ -71,11 +71,13 @@ yarn task token-transfer --token meow --amount 100000  --recipient 0x589F6Cc29e9
 # Deploy the CrossChainSwapper
 yarn task ccs-deploy --network fuji
 # Set the Sepolia destination details
-yarn task ccs-dest --chain-id 11155111 --network sepolia
+yarn task ccs-dest --chain-id 11155111 --network fuji
 
 # Approve the CrossChainSwapper to transfer Meow tokens
 yarn task token-approve --token meow --spender CrossChainSwapper --network fuji
 # Deposit Meow tokens into the CrossChainSwapper
 yarn task ccs-deposit --amount 20 --token meow --network fuji
+# Taker creates a swap
+yarn task ccs-take-swap --amount 8 --token meow --network fuji
 
 ```

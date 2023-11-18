@@ -18,8 +18,8 @@ subtask("ccs-deposit", "Deposits Meow in the Cross Chain Swapper contract")
   .addParam("amount", "Amount to deposit.", undefined, types.float)
   .addOptionalParam(
     "token",
-    "Token symbol or address. eg Meow",
-    "Meow",
+    "Token symbol or address. eg meow",
+    "meow",
     types.string
   )
   .setAction(async (taskArgs, hre) => {
@@ -49,8 +49,8 @@ subtask("ccs-make-swap", "Maker creates a swap")
   .addParam("amount", "Amount to swap.", undefined, types.float)
   .addOptionalParam(
     "token",
-    "Token symbol or address. eg Meow",
-    "Meow",
+    "Token symbol or address. eg meow",
+    "meow",
     types.string
   )
   .setAction(async (taskArgs, hre) => {
@@ -77,6 +77,41 @@ subtask("ccs-make-swap", "Maker creates a swap")
     );
   });
 task("ccs-make-swap").setAction(async (_, __, runSuper) => {
+  return runSuper();
+});
+
+subtask("ccs-take-swap", "Taker matches a swap")
+  .addParam("amount", "Amount to swap.", undefined, types.float)
+  .addOptionalParam(
+    "token",
+    "Token symbol or address. eg Meow",
+    "meow",
+    types.string
+  )
+  .setAction(async (taskArgs, hre) => {
+    const signer = await getSigner(hre);
+    const chain = await getChain(hre);
+
+    const swapperAddress = await resolveName("CrossChainSwapper", chain);
+    const swapper = CrossChainSwapper__factory.connect(swapperAddress, signer);
+
+    const amountBN = parseUnits(taskArgs.amount.toString(), sMeow.decimals);
+    const rate = parseUnits("1", sMeow.decimals);
+
+    log(`About to create swap for ${taskArgs.amount} Meow`);
+    const tx = await swapper.takeSwap(
+      fMeow.address,
+      sMeow.address,
+      Chain.sepolia,
+      rate,
+      amountBN
+    );
+    await logTxDetails(
+      tx,
+      `matched swap for ${taskArgs.amount} ${sMeow.symbol}`
+    );
+  });
+task("ccs-take-swap").setAction(async (_, __, runSuper) => {
   return runSuper();
 });
 
