@@ -346,9 +346,29 @@ export const crossChainSwapperABI =  [
                         "internalType": "uint256",
                         "name": "amount",
                         "type": "uint256"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "sourceToken",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "destinationToken",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "destinationChainId",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint128",
+                        "name": "rate",
+                        "type": "uint128"
                     }
                 ],
-                "internalType": "struct CrossChainSwapper.MakerSwap[]",
+                "internalType": "struct CrossChainSwapper.MakerSwapAll[]",
                 "name": "makerSwaps_",
                 "type": "tuple[]"
             }
@@ -645,9 +665,29 @@ export const crossChainSwapperABI =  [
                         "internalType": "uint256",
                         "name": "amount",
                         "type": "uint256"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "sourceToken",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "destinationToken",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "destinationChainId",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint128",
+                        "name": "rate",
+                        "type": "uint128"
                     }
                 ],
-                "internalType": "struct CrossChainSwapper.MakerSwap[]",
+                "internalType": "struct CrossChainSwapper.MakerSwapAll[]",
                 "name": "makerSwaps_",
                 "type": "tuple[]"
             }
@@ -770,9 +810,29 @@ export const crossChainSwapperABI =  [
                         "internalType": "uint256",
                         "name": "amount",
                         "type": "uint256"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "sourceToken",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "destinationToken",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "destinationChainId",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint128",
+                        "name": "rate",
+                        "type": "uint128"
                     }
                 ],
-                "internalType": "struct CrossChainSwapper.MakerSwap[]",
+                "internalType": "struct CrossChainSwapper.MakerSwapAll[]",
                 "name": "makerSwaps_",
                 "type": "tuple[]"
             }
