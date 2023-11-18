@@ -23,7 +23,7 @@ export const ChainImage = ({chainId, className, size = 24}: ChainImageProps) => 
         }
     }, [chainId])
     if (!src) {
-        return <div className='h-6 w-6 bg-primary-300 rounded-full flex items-center justify-center font-bold'>
+        return <div className='h-6 w-6 bg-primary-300 rounded-full flex items-center justify-center font-bold text-white'>
             {chain?.name?.[0] ?? '?'}
         </div>
     }
