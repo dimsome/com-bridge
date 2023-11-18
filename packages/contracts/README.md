@@ -33,13 +33,15 @@ Token Swap
 
 ## TODO: Deployments
 
--[] Scroll Sepolia (Deploy and verify contracts)
--[] Arbitrum Goerli (Deploy and verify contracts)
--[] Polygon zkEVM Testnet (Deploy and verify contracts)
--[] Linea testnet (Deploy and verify contracts)
--[] Celo testnet (Deploy and verify contracts)
--[] Mantle testnet (Deploy and verify contracts)
--[] Gnosischain testnet (Deploy and verify contracts, nice to have)
+| Network               | Requirements                              | Status |
+| --------------------- | ----------------------------------------- | ------ |
+| Sepolia               | Deploy and verify contracts               | TODO   |
+| Arbitrum Goerli       | Deploy and verify contracts               | TODO   |
+| Polygon zkEVM Testnet | Deploy and verify contracts               | TODO   |
+| Linea testnet         | Deploy and verify contracts               | TODO   |
+| Celo testnet          | Deploy and verify contracts               | TODO   |
+| Mantle testnet        | Deploy and verify contracts               | TODO   |
+| Gnosischain testnet   | Deploy and verify contracts, nice to have | TODO   |
 
 ## Current Deployments
 
