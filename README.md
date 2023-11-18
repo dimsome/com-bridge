@@ -18,10 +18,15 @@ Our project aims to streamline this process by pairing users intending to bridge
 
 ## How it works
 
-Alice has 1000 Meow tokens on Chain A, and wants to swap them for 1000 Meow tokens on Chain B.
-Bob has 1000 Meow tokens on Chain B, and wants to swap them for 1000 Meow tokens on Chain A.
+- **Want A:** Alice has 1000 Meow tokens on Chain A, and wants to swap them for 1000 Meow tokens on Chain B.
+- **Want B:** Bob has 1000 Meow tokens on Chain B, and wants to swap them for 1000 Meow tokens on Chain A.
 
-They both use the CoM protocol to swap their tokens, Alice deposits the tokens and creates the order (Maker), Bob matches the order (Taker) and initiates the swap. So Bob deposits the tokens and starts the settlement, the tokens are locked and a cross-chain message is sent to the other chain. Which unlocks the token and a message is sent back to the original chain to unlock the tokens there.
+Here's how they use the CoM protocol to swap their tokens:
+
+1. Alice deposits her tokens on Chain A and creates the order (Maker).
+2. Bob wants to go the other way and can match the order (Taker).
+3. Bob deposits his tokens on Chain B, initiating the swap.
+4. The settlement is triggered, the tokens are locked, a cross-chain message is sent to the other chain, which unlocks the tokens on the other chain and a message is sent back to the original chain to unlock the tokens there.
 
 Simple, right? No pool or liquidity provider, just a simple P2P swap.
 
