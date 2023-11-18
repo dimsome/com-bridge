@@ -1,7 +1,10 @@
 import { parseUnits, parseEther } from "ethers/lib/utils";
 import { subtask, task, types } from "hardhat/config";
 
-import { CrossChainSwapper__factory } from "../types/typechain";
+import {
+  CrossChainSwapper__factory,
+  SelectorLib__factory,
+} from "../types/typechain";
 import { verifyEtherscan } from "../utils/etherscan";
 import { logger } from "../utils/logger";
 import { getSigner } from "../utils/signer";
@@ -106,8 +109,7 @@ subtask("ccs-take-swap", "Taker matches a swap")
       sMeow.address,
       Chain.sepolia,
       rate,
-      amountBN,
-      { gasLimit: 5000000 }
+      amountBN
     );
     await logTxDetails(
       tx,
@@ -147,6 +149,30 @@ task("ccs-dest").setAction(async (_, __, runSuper) => {
   return runSuper();
 });
 
+subtask("ccs-deploy-lib", "Deploys a SelectorLib library").setAction(
+  async (taskArgs, hre) => {
+    const signer = await getSigner(hre);
+    const chain = await getChain(hre);
+
+    const constructorArguments = [];
+    log(`About to deploy SelectorLib library on ${chain}`);
+    const selectorLib = await deployContract(
+      new SelectorLib__factory(signer),
+      `deploy SelectorLib`,
+      constructorArguments
+    );
+
+    await verifyEtherscan(hre, {
+      address: selectorLib.address,
+      constructorArguments,
+    });
+    return selectorLib;
+  }
+);
+task("ccs-deploy-lib").setAction(async (_, __, runSuper) => {
+  return runSuper();
+});
+
 subtask("ccs-deploy", "Deploys a new Cross Chain Swapper contract").setAction(
   async (taskArgs, hre) => {
     const signer = await getSigner(hre);
@@ -173,6 +199,11 @@ subtask("ccs-deploy", "Deploys a new Cross Chain Swapper contract").setAction(
       ];
     }
 
+    const selectorLibAddress = await resolveName("SelectorLib", chain);
+    const linkedLibraryAddresses = {
+      "contracts/SelectorLib.sol:SelectorLib": selectorLibAddress,
+    };
+
     const linkToken = await resolveAssetToken(signer, chain, "Link");
     const constructorArguments = [
       chain,
@@ -182,7 +213,7 @@ subtask("ccs-deploy", "Deploys a new Cross Chain Swapper contract").setAction(
     ];
     log(`About to deploy CrossChainSwapper contract on ${chain}`);
     const crossChainSwapper = await deployContract(
-      new CrossChainSwapper__factory(signer),
+      new CrossChainSwapper__factory(linkedLibraryAddresses, signer),
       `Cross Chain Swapper to ${chain}`,
       constructorArguments
     );
