@@ -6,6 +6,8 @@ import {Manrope} from "next/font/google";
 import {ToastContainer} from "react-toastify";
 import Image from "next/image";
 import Bg from "~/bg_.png";
+import { Header } from "@/components/Header";
+import {Providers} from "@/components/Providers";
 
 const manrope = Manrope({subsets: ["latin"]});
 export const metadata: Metadata = {
@@ -27,9 +29,14 @@ export default function RootLayout({
         </div>
         <div
             className='-z-10 fixed inset-0 min-h-screen'></div>
-
-        {children}
-        <ToastContainer/>
+        <Providers>
+            <div data-header-trigger></div>
+            <Header/>
+            {children}
+        </Providers>
+        <ToastContainer
+            toastClassName={'!bg-purple-500 !rounded-2xl !text-purple-50'}
+         />
         </body>
         </html>
     );
