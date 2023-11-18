@@ -1,14 +1,14 @@
 import { newMockEvent } from "matchstick-as"
-import { ethereum, Address, BigInt, Bytes } from "@graphprotocol/graph-ts"
+import { ethereum, Bytes, BigInt } from "@graphprotocol/graph-ts"
 import {
   MakeSwap,
   MakerSwaps,
+  ReceiverCCIPMessage,
   TakeSwap
 } from "../generated/CrossChainSwapper/CrossChainSwapper"
 
 export function createMakeSwapEvent(
-  token: Address,
-  destinationChainId: BigInt,
+  poolKey: Bytes,
   poolBalance: BigInt
 ): MakeSwap {
   let makeSwapEvent = changetype<MakeSwap>(newMockEvent())
@@ -16,13 +16,7 @@ export function createMakeSwapEvent(
   makeSwapEvent.parameters = new Array()
 
   makeSwapEvent.parameters.push(
-    new ethereum.EventParam("token", ethereum.Value.fromAddress(token))
-  )
-  makeSwapEvent.parameters.push(
-    new ethereum.EventParam(
-      "destinationChainId",
-      ethereum.Value.fromUnsignedBigInt(destinationChainId)
-    )
+    new ethereum.EventParam("poolKey", ethereum.Value.fromFixedBytes(poolKey))
   )
   makeSwapEvent.parameters.push(
     new ethereum.EventParam(
@@ -63,6 +57,27 @@ export function createMakerSwapsEvent(
   )
 
   return makerSwapsEvent
+}
+
+export function createReceiverCCIPMessageEvent(
+  messageData: Bytes,
+  selector: Bytes
+): ReceiverCCIPMessage {
+  let receiverCcipMessageEvent = changetype<ReceiverCCIPMessage>(newMockEvent())
+
+  receiverCcipMessageEvent.parameters = new Array()
+
+  receiverCcipMessageEvent.parameters.push(
+    new ethereum.EventParam(
+      "messageData",
+      ethereum.Value.fromBytes(messageData)
+    )
+  )
+  receiverCcipMessageEvent.parameters.push(
+    new ethereum.EventParam("selector", ethereum.Value.fromFixedBytes(selector))
+  )
+
+  return receiverCcipMessageEvent
 }
 
 export function createTakeSwapEvent(

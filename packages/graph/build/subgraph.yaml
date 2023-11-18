@@ -6,9 +6,9 @@ dataSources:
     name: CrossChainSwapper
     network: sepolia
     source:
-      address: "0x29074D3F45503D954209Af19439c4Dc2520EED65"
+      address: "0x5369B69810E7e682dc2ce04C9dF972Aa61887Fdc"
       abi: CrossChainSwapper
-      startBlock: 4717057
+      startBlock: 4718871
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -16,15 +16,18 @@ dataSources:
       entities:
         - MakeSwap
         - MakerSwaps
+        - ReceiverCCIPMessage
         - TakeSwap
       abis:
         - name: CrossChainSwapper
           file: CrossChainSwapper/abis/CrossChainSwapper.json
       eventHandlers:
-        - event: MakeSwap(indexed address,indexed uint64,uint256)
+        - event: MakeSwap(bytes32,uint256)
           handler: handleMakeSwap
         - event: MakerSwaps(indexed bytes32,indexed bytes32,(address,uint256)[])
           handler: handleMakerSwaps
+        - event: ReceiverCCIPMessage(bytes,bytes4)
+          handler: handleReceiverCCIPMessage
         - event: TakeSwap(indexed bytes32,indexed bytes32)
           handler: handleTakeSwap
       file: CrossChainSwapper/CrossChainSwapper.wasm
