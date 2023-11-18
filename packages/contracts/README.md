@@ -17,7 +17,7 @@ Token Swap
 
 ![Cross Chain Swaps](./docs/processes.png)
 
-## Testnets
+## Chainlink Testnets
 
 | Chain           | ChainId  | Link                                       | CCIP Router                                |
 | --------------- | -------- | ------------------------------------------ | ------------------------------------------ |
@@ -28,3 +28,21 @@ Token Swap
 | Polygon Mumbai  | 80001    | 0x326C977E6efc84E512bB9C30f76E30c160eD06FB | 0x70499c328e1e2a3c41108bd3730f6670a44595d1 |
 | BNB Testnet     | 97       | 0x84b9B910527Ad5C03A9Ca831909E21e236EA7b06 | 0x9527e2d01a3064ef6b50c1da1c0cc523803bcff2 |
 | Base Testnet    | 84531    | 0xd886e2286fd1073df82462ea1822119600af80b6 | 0xa8c0c11bf64af62cdca6f93d3769b88bdd7cb93d |
+
+# Contract Deployments
+
+| Chain         | Meow Token                                                                                                                    | Cross Chain Swapper |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------------- |
+| Sepolia       | [0x4a3C098D5D1422574015A55d7ad9Cf904226a2e6](https://sepolia.etherscan.io/address/0x4a3C098D5D1422574015A55d7ad9Cf904226a2e6) |                     |
+| Avalance Fuji | [0x2237e5dee801a432965210933c1F26696565303d](https://testnet.snowtrace.io/address/0x2237e5dee801a432965210933c1F26696565303d) |                     |
+
+```
+export PRIVATE_KEY=
+
+# Meow token on Sepolia
+yarn task token-deploy --name meow --symbol meow --decimals 18  --network sepolia
+yarn task ccs-deploy --network sepolia
+
+# Meow token on Avalanche Fuji
+yarn task token-deploy --name meow --symbol meow --decimals 18  --network testnet
+```

@@ -7,9 +7,8 @@
   "engines": {
     "node": ">=18.0.0"
   },
-  "private": true,
   "workspaces": [
-    "packages/*"
+    "packages/apps"
   ],
   "scripts": {
     "start:contracts": "yarn workspace packs-contracts run start",

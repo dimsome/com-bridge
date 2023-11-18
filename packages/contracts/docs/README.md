@@ -20,7 +20,7 @@ npx puml generate handleOpsNoPayMaster.puml -o handleOpsNoPayMaster.png
 
 ### VS Code extension
 
-[Jebbs PlantUML](https://marketplace.visualstudio.com/items?itemName=jebbs.plantuml) extension for VS Code is used to authoring the PlantUML diagrams.
+[Jebbs PlantUML](https://marketplace.visualstudio.com/items?itemName=jebbs.plantuml) extension for VS Code is used to author the PlantUML diagrams.
 
 `Alt-D` on Windows, or `Option-D` on Mac, to start PlantUML preview in VS Code.
 

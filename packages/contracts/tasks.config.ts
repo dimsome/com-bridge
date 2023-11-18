@@ -1,5 +1,6 @@
-import './src/tasks/token';
+import "./src/tasks/crossChainSwapper";
+import "./src/tasks/token";
 
-import config from './hardhat.config';
+import config from "./hardhat.config";
 
 export default config;

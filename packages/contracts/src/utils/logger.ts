@@ -1,4 +1,4 @@
-import debug from 'debug';
+import debug from "debug";
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const logger = (...args: string[]) => debug(`aa:${args.join(':')}`);
+export const logger = (...args: string[]) => debug(`ccs:${args.join(":")}`);

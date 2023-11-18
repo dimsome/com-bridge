@@ -3,6 +3,7 @@ node_modules
 yarn.lock
 bin
 .vscode
-packages/contracts/artifacts
-packages/contracts/cache
-packages/contracts/src/types/typechain
+artifacts
+cache
+typechain
+logs

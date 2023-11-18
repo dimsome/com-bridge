@@ -1,4 +1,4 @@
-import type { HardhatRuntimeEnvironment } from 'hardhat/types';
+import type { HardhatRuntimeEnvironment } from "hardhat/types";
 
 export enum Chain {
   mainnet = 1,
@@ -13,7 +13,7 @@ export enum Chain {
   Base = 84531,
   bsc = 56,
   bscTestnet = 97,
-  avalance = 43114,
+  avalanche = 43114,
   fuji = 43113,
   fantom = 250,
   gnosis = 100,
@@ -21,19 +21,25 @@ export enum Chain {
 }
 
 export const getChain = (hre: HardhatRuntimeEnvironment): Chain => {
-  if (hre?.network.name === 'mainnet' || hre?.hardhatArguments?.config === 'tasks-fork.config.ts') {
+  if (
+    hre?.network.name === "mainnet" ||
+    hre?.hardhatArguments?.config === "tasks-fork.config.ts"
+  ) {
     return Chain.mainnet;
   }
-  if (hre?.network.name === 'polygon_mainnet' || hre?.hardhatArguments?.config === 'tasks-fork-polygon.config.ts') {
+  if (
+    hre?.network.name === "polygon_mainnet" ||
+    hre?.hardhatArguments?.config === "tasks-fork-polygon.config.ts"
+  ) {
     return Chain.polygon;
   }
-  if (hre?.network.name === 'polygon_testnet') {
+  if (hre?.network.name === "polygon_testnet") {
     return Chain.mumbai;
   }
-  if (hre?.network.name === 'goerli') {
+  if (hre?.network.name === "goerli") {
     return Chain.goerli;
   }
-  if (hre?.network.name === 'sepolia') {
+  if (hre?.network.name === "sepolia") {
     return Chain.sepolia;
   }
   return Chain.mainnet;
