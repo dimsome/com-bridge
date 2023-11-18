@@ -8,7 +8,7 @@ import {InfoItem} from "@/components/content/InfoItem";
 import Button from "@/components/button/Button";
 import {toast} from "react-toastify";
 import {Card} from "@/components/Card";
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {
     Address,
     Chain,
@@ -23,6 +23,7 @@ import useContractAddresses, {getAddressesByChainId} from "@/src/hooks/useContra
 import {useMakeSwap} from "@/src/hooks/useMakeSwap";
 import {useTakeSwap} from "@/src/hooks/useTakeSwap";
 import {useMatchingOrderValue} from "@/src/hooks/useMatchingOrderValue";
+import {HandleOrderButton} from "@/components/home/HandleOrderButton";
 
 export const CreateOrderForm = () => {
     const {chain} = useNetwork();
@@ -31,11 +32,15 @@ export const CreateOrderForm = () => {
     const [destinationChain, setDestinationChain] = useState<Chain>()
     const [selectedToken, setSelectedToken] = useState<Address>()
     const [amount, setAmount] = useState<bigint>()
-    useEffect(() => {
+    const resetData = useCallback(() => {
         setDestinationChain(undefined);
         setSelectedToken(undefined);
         setAmount(undefined);
-    }, [chain?.id]);
+    },[])
+
+    useEffect(() => {
+      resetData();
+    }, [chain?.id, resetData]);
 
 
 
@@ -159,60 +164,6 @@ const ActionButton = ({destinationChain, token, amount}: ActionProps & { take: b
 }
 
 
-const HandleOrderButton = ({destinationChain, token, amount}: ActionProps) => {
-    const destinationAddresses = getAddressesByChainId(destinationChain!.id)
-
-    const {data, isLoading} = useMatchingOrderValue({
-        destinationChainId: destinationChain!.id,
-        selectedToken: destinationAddresses.Meow,
-        sourceToken: token!})
-
-
-    return <>
-        <CreateOrderButton destinationChain={destinationChain} token={token} amount={amount}/>
-        <TakeOrderButton disable={isLoading || data < amount!} destinationChain={destinationChain} token={token} amount={amount}/>
-    </>
-
-
-}
-
-
-const CreateOrderButton = ({destinationChain, token, amount}: ActionProps) => {
-    //TODO IT ONLY SUPPORT MEOW ATM
-    const destinationAddresses = getAddressesByChainId(destinationChain!.id)
-    const {write, isLoading, isError, isSuccess} = useMakeSwap({
-        destinationChainId: destinationChain!.id,
-        destinationToken: destinationAddresses.Meow,
-        token: token!,
-        amount: amount!
-    })
-
-
-
-    return <Button variant="CTA" isLoading={isLoading} className="w-full mt-4" onClick={() => write && write()}>
-        Create Order
-    </Button>
-}
-const TakeOrderButton = ({destinationChain, token, amount, disable}: ActionProps & {disable: boolean}) => {
-    //TODO IT ONLY SUPPORT MEOW ATM
-    const destinationAddresses = getAddressesByChainId(destinationChain!.id)
-    const {write, isLoading, isError, isSuccess} = useTakeSwap({
-        destinationChainId: destinationChain!.id,
-        destinationToken: destinationAddresses.Meow,
-        token: token!,
-        amount: amount!
-    })
-    useEffect(() => {
-        if (isSuccess) {
-            toast.success('Order has been Executed', {autoClose: 3000})
-        }
-    }, [isSuccess]);
-
-
-    return <Button variant="CTA" disabled={disable} isLoading={isLoading} className="w-full mt-4" onClick={() => write && write()}>
-        Take Order
-    </Button>
-}
 const ApproveButton = ({token, amount}: { token: Address, amount: bigint }) => {
     const addresses = useContractAddresses();
     const {config} = usePrepareContractWrite({
