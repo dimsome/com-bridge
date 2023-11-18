@@ -218,7 +218,7 @@ subtask("ccs-deploy", "Deploys a new Cross Chain Swapper contract").setAction(
       constructorArguments
     );
     // const crossChainSwapper = CrossChainSwapper__factory.connect(
-    //   "0xe99688A81C02bf72f02CBac04cDCA7f1108F72cb",
+    //   "0x7eEE30257016A50D2BB66921B21F381455d7144d",
     //   signer
     // );
 

@@ -111,7 +111,7 @@ export ETHERSCAN_KEY=$ETHERSCAN_KEY_SEPOLIA
 export NODE_URL=$NODE_URL_SEPOLIA
 
 # Maker creates a swap
-yarn task ccs-make-swap --amount 8 --token meow --network sepolia
+yarn task ccs-make-swap --amount 990 --token meow --network sepolia
 
 ## Avalanche Fuji
 
@@ -119,11 +119,44 @@ export ETHERSCAN_KEY=$ETHERSCAN_KEY_FUJI
 export NODE_URL=$NODE_URL_FUJI
 
 # Taker matches the swap
-# yarn task ccs-deploy --network fuji
-# yarn task token-transfer --token Link --amount 3  --recipient CrossChainSwapper --network fuji
-# yarn task ccs-dest --chain-id 11155111 --network fuji
+yarn task ccs-take-swap --amount 4 --token meow --network fuji
+```
+
+Taker side redeploy
+
+```sh
+export ETHERSCAN_KEY=$ETHERSCAN_KEY_FUJI
+export NODE_URL=$NODE_URL_FUJI
+
+yarn task ccs-deploy --network fuji
+# update CrossChainSwapper address in namedAddress.ts
+yarn task token-transfer --token Link --amount 3  --recipient CrossChainSwapper --network fuji
+yarn task ccs-dest --chain-id 11155111 --network fuji
+yarn task token-approve --token meow --spender CrossChainSwapper --network fuji
+yarn task ccs-deposit --amount 2000 --token meow --network fuji
 yarn task ccs-take-swap --amount 8 --token meow --network fuji
 
-# yarn task:fork ccs-take-swap --amount 8 --token meow --network fuji
+# copy tx hash and view on the Chainlink explorer https://ccip.chain.link/
 
+# yarn task:fork ccs-take-swap --amount 8 --token meow --network fuji
+```
+
+Maker side redeploy
+
+```sh
+export ETHERSCAN_KEY=$ETHERSCAN_KEY_SEPOLIA
+export NODE_URL=$NODE_URL_SEPOLIA
+
+yarn task ccs-deploy --network sepolia
+# update CrossChainSwapper address in namedAddress.ts
+yarn task token-transfer --token Link --amount 3  --recipient CrossChainSwapper --network sepolia
+yarn task ccs-dest --chain-id 43113 --network sepolia
+yarn task token-approve --token meow --spender CrossChainSwapper --network sepolia
+yarn task ccs-deposit --amount 1000 --token meow --network sepolia
+
+export ETHERSCAN_KEY=$ETHERSCAN_KEY_FUJI
+export NODE_URL=$NODE_URL_FUJI
+
+yarn task ccs-dest --chain-id 11155111 --network fuji
+yarn task ccs-take-swap --amount 8 --token meow --network fuji
 ```

@@ -24,7 +24,7 @@ export const resolveName = (
   } else if (chain === Chain.sepolia) {
     switch (contractName) {
       case "CrossChainSwapper":
-        return "0x5369B69810E7e682dc2ce04C9dF972Aa61887Fdc";
+        return "0xAfA51D88Bb07f668129526390dB4D20D84dAbB16";
       case "CCIP_Router":
         return "0xd0daae2231e9cb96b94c8512223533293c3693bf";
       case "CCIP_ChainSelector":
@@ -36,7 +36,31 @@ export const resolveName = (
   } else if (chain === Chain.fuji) {
     switch (contractName) {
       case "CrossChainSwapper":
-        return "0x08bC993703b6e8a4ACe99E6F9687d87a4a5AEFeF";
+        return "0xad3482704e34567b7AAEe584A7d47cCDaff30E5A";
+      case "CCIP_Router":
+        return "0x554472a2720e5e7d5d3c817529aba05eed5f82d8";
+      case "CCIP_ChainSelector":
+        return "14767482510784806043";
+      case "SelectorLib":
+        return "0x6725B13eD908FB146778b7CD956c385d3d88F587";
+      default:
+    }
+  } else if (chain === Chain.celo) {
+    switch (contractName) {
+      case "CrossChainSwapper":
+        return "0xad3482704e34567b7AAEe584A7d47cCDaff30E5A";
+      case "CCIP_Router":
+        return "0x554472a2720e5e7d5d3c817529aba05eed5f82d8";
+      case "CCIP_ChainSelector":
+        return "14767482510784806043";
+      case "SelectorLib":
+        return "0x6725B13eD908FB146778b7CD956c385d3d88F587";
+      default:
+    }
+  } else if (chain === Chain.scroll) {
+    switch (contractName) {
+      case "CrossChainSwapper":
+        return "0xad3482704e34567b7AAEe584A7d47cCDaff30E5A";
       case "CCIP_Router":
         return "0x554472a2720e5e7d5d3c817529aba05eed5f82d8";
       case "CCIP_ChainSelector":

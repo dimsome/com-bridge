@@ -96,7 +96,8 @@ contract CrossChainSwapper is CCIPReceiver {
         bytes32 indexed destinationPoolKey,
         MakerSwap[] filledMakerSwaps
     );
-    event ReceiverCCIPMessage(bytes messageData, bytes4 selector);
+    event ReceiverCCIPMessage(bytes4 selector, bytes payload);
+    event SendingCCIPMessage(bytes payload);
 
     /***************************************
                 Deposit/Withdraw
@@ -223,7 +224,7 @@ contract CrossChainSwapper is CCIPReceiver {
             sourceToken,
             sourceChainId,
             // Need to invert the rate
-            RATE_SCALE / rate
+            (RATE_SCALE * RATE_SCALE) / rate
         );
         uint256 destinationAmount = (amount * RATE_SCALE) / rate;
         // TODO check no in-progress settlement with destination liquidity pool
@@ -312,6 +313,21 @@ contract CrossChainSwapper is CCIPReceiver {
         //
     }
 
+    function calcPoolKey(
+        address sourceToken,
+        address destinationToken,
+        uint64 destinationChainId,
+        uint256 rate
+    ) public pure returns (bytes32 poolKey) {
+        poolKey = keccak256(
+            abi.encode(sourceToken, destinationToken, destinationChainId, rate)
+        );
+    }
+
+    /***************************************
+                View Functions
+    ****************************************/
+
     function makerSwaps(
         bytes32 poolKey
     ) external view returns (MakerSwap[] memory makerSwaps_) {
@@ -324,17 +340,6 @@ contract CrossChainSwapper is CCIPReceiver {
         for (uint256 i; i < makerQueueLength; ++i) {
             makerSwaps_[i] = liquidityPool.makerSwapQueue[queueData.next + i];
         }
-    }
-
-    function calcPoolKey(
-        address sourceToken,
-        address destinationToken,
-        uint64 destinationChainId,
-        uint256 rate
-    ) public pure returns (bytes32 poolKey) {
-        poolKey = keccak256(
-            abi.encode(sourceToken, destinationToken, destinationChainId, rate)
-        );
     }
 
     /***************************************
@@ -390,7 +395,6 @@ contract CrossChainSwapper is CCIPReceiver {
             sourceLiquidityPool.poolData.destinationChainId
         ];
 
-        // CCIPData memory ccipData = sourceLiquidityPool.ccip;
         Client.EVM2AnyMessage memory ccipMessage = Client.EVM2AnyMessage({
             receiver: abi.encode(destination.swapper),
             data: messageData,
@@ -431,6 +435,7 @@ contract CrossChainSwapper is CCIPReceiver {
             takerAmount,
             filledMakerSwaps
         );
+        emit SendingCCIPMessage(messageData);
 
         LiquidityPoolData memory destinationPool = liquidityPools[
             destinationPoolKey
@@ -445,7 +450,7 @@ contract CrossChainSwapper is CCIPReceiver {
             data: messageData,
             tokenAmounts: new Client.EVMTokenAmount[](0),
             extraArgs: Client._argsToBytes(
-                Client.EVMExtraArgsV1({gasLimit: 500_000, strict: false})
+                Client.EVMExtraArgsV1({gasLimit: 1_000_000, strict: false})
             ),
             feeToken: address(linkToken)
         });
@@ -459,13 +464,13 @@ contract CrossChainSwapper is CCIPReceiver {
         uint256 linkBalance = IERC20(linkToken).balanceOf(address(this));
         if (fees > linkBalance) revert NotEnoughLink(linkBalance, fees);
 
-        // Send the message through the router and store the returned message ID
-        bytes32 messageId = IRouterClient(i_router).ccipSend(
-            destination.ccipChainSelector,
-            ccipMessage
-        );
+        // // Send the message through the router and store the returned message ID
+        // bytes32 messageId = IRouterClient(i_router).ccipSend(
+        //     destination.ccipChainSelector,
+        //     ccipMessage
+        // );
 
-        emit MakerSwaps(messageId, destinationPoolKey, filledMakerSwaps);
+        // emit MakerSwaps(messageId, destinationPoolKey, filledMakerSwaps);
     }
 
     function _ccipReceive(
@@ -473,7 +478,7 @@ contract CrossChainSwapper is CCIPReceiver {
     ) internal override {
         bytes4 selector = bytes4(message.data);
         bytes memory dataNoSelector = SelectorLib.removeSelector(message.data);
-        emit ReceiverCCIPMessage(message.data, selector);
+        emit ReceiverCCIPMessage(selector, dataNoSelector);
 
         if (selector == 0xc3a5273a) {
             // If take(bytes32,uint32) encoded message
@@ -481,7 +486,7 @@ contract CrossChainSwapper is CCIPReceiver {
                 dataNoSelector,
                 (bytes32, uint256)
             );
-            // _settleMaker(poolKey, takerAmount);
+            _settleMaker(poolKey, takerAmount);
         }
         if (selector == 0x00000) {
             // maker(bytes32,uint256,MakerSwap[]) encoded message
@@ -490,7 +495,7 @@ contract CrossChainSwapper is CCIPReceiver {
                 uint256 takerAmount,
                 MakerSwap[] memory _makerSwaps
             ) = abi.decode(dataNoSelector, (bytes32, uint256, MakerSwap[]));
-            // _settleTaker(poolKey, takerAmount, _makerSwaps);
+            _settleTaker(poolKey, takerAmount, _makerSwaps);
         }
     }
 
