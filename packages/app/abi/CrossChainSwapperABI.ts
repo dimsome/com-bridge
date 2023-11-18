@@ -1,4 +1,4 @@
-export const crossChainSwapperABI = [
+export const crossChainSwapperABI =  [
     {
         "inputs": [
             {
@@ -208,12 +208,31 @@ export const crossChainSwapperABI = [
         "inputs": [
             {
                 "indexed": false,
+                "internalType": "bytes4",
+                "name": "selector",
+                "type": "bytes4"
+            },
+            {
+                "indexed": false,
                 "internalType": "bytes",
-                "name": "messageData",
+                "name": "payload",
                 "type": "bytes"
             }
         ],
         "name": "ReceiverCCIPMessage",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "bytes",
+                "name": "payload",
+                "type": "bytes"
+            }
+        ],
+        "name": "SendingCCIPMessage",
         "type": "event"
     },
     {
@@ -230,6 +249,18 @@ export const crossChainSwapperABI = [
                 "internalType": "bytes32",
                 "name": "destinationPoolKey",
                 "type": "bytes32"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "sourceAmount",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "destinationAmount",
+                "type": "uint256"
             }
         ],
         "name": "TakeSwap",
@@ -298,6 +329,31 @@ export const crossChainSwapperABI = [
         "name": "addLiquidityPool",
         "outputs": [],
         "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "allMakerSwaps",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "address",
+                        "name": "maker",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "amount",
+                        "type": "uint256"
+                    }
+                ],
+                "internalType": "struct CrossChainSwapper.MakerSwap[]",
+                "name": "makerSwaps_",
+                "type": "tuple[]"
+            }
+        ],
+        "stateMutability": "view",
         "type": "function"
     },
     {
@@ -688,6 +744,37 @@ export const crossChainSwapperABI = [
                 "internalType": "uint128",
                 "name": "unlocked",
                 "type": "uint128"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "user",
+                "type": "address"
+            }
+        ],
+        "name": "userMakerSwaps",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "address",
+                        "name": "maker",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "amount",
+                        "type": "uint256"
+                    }
+                ],
+                "internalType": "struct CrossChainSwapper.MakerSwap[]",
+                "name": "makerSwaps_",
+                "type": "tuple[]"
             }
         ],
         "stateMutability": "view",
