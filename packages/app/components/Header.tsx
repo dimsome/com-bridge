@@ -8,19 +8,7 @@ import clsxm from "@/src/lib/clsxm";
 import Link from "next/link";
 
 const Header = () => {
-  const [scrolled, setScrolled] = useState(false);
-  useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => {
-      setScrolled(!entry.isIntersecting);
-    });
-    const trigger = document.querySelector("[data-header-trigger]");
-    if (trigger) {
-      observer.observe(trigger);
-    }
-    return () => {
-      observer.disconnect();
-    };
-  }, []);
+  const scrolled = useIsScrolled("[data-header-trigger]")
   return (
     <header
       className={clsxm(
@@ -54,5 +42,23 @@ const Header = () => {
     </header>
   );
 };
+
+const useIsScrolled = (selector: string) => {
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      setScrolled(!entry.isIntersecting);
+    });
+    const trigger = document.querySelector(selector);
+    if (trigger) {
+      observer.observe(trigger);
+    }
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
+  return scrolled
+}
 
 export { Header };
