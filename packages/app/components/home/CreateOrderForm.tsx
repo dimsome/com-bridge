@@ -22,6 +22,7 @@ import {
 import useContractAddresses, {getAddressesByChainId} from "@/src/hooks/useContractAddresses";
 import {useMakeSwap} from "@/src/hooks/useMakeSwap";
 import {useTakeSwap} from "@/src/hooks/useTakeSwap";
+import {useMatchingOrderValue} from "@/src/hooks/useMatchingOrderValue";
 
 export const CreateOrderForm = () => {
     const {chain} = useNetwork();
@@ -35,6 +36,8 @@ export const CreateOrderForm = () => {
         setSelectedToken(undefined);
         setAmount(undefined);
     }, [chain?.id]);
+
+
 
     return <Card>
         <div className="flex justify-between">
@@ -105,18 +108,12 @@ export const CreateOrderForm = () => {
             <span className='text-primary-50'>Gas Fees</span>
             <span>0.0003765888 ETH</span>
         </div>
-        <div>Make an order</div>
         <ActionButton
             destinationChain={destinationChain}
             token={selectedToken}
             take={false}
             amount={amount}/>
-        <div>Execute the order</div>
-        <ActionButton
-            destinationChain={destinationChain}
-            token={selectedToken}
-            take={true}
-            amount={amount}/>
+
     </Card>
 }
 
@@ -125,7 +122,7 @@ type ActionProps = {
     token?: Address,
     amount?: bigint,
 }
-const ActionButton = ({destinationChain, token, amount, take}: ActionProps & { take: boolean }) => {
+const ActionButton = ({destinationChain, token, amount}: ActionProps & { take: boolean }) => {
     const {address} = useAccount()
     const addresses = useContractAddresses();
 
@@ -142,7 +139,8 @@ const ActionButton = ({destinationChain, token, amount, take}: ActionProps & { t
     useEffect(() => {
         token && refetch()
     }, [token, refetch]);
-    if (!amount || !token || !destinationChain) {
+
+    if (!amount || !token || !destinationChain?.id) {
         return <Button variant="CTA" className="w-full mt-4" disabled={true}>
             {
                 !token ? 'Select token' : !amount ? 'Enter amount' : 'Select destination chain'
@@ -152,10 +150,30 @@ const ActionButton = ({destinationChain, token, amount, take}: ActionProps & { t
     if ((dataAllowance ?? 0n) < (amount ?? 0)) {
         return <ApproveButton token={token!} amount={amount!}/>
     }
-    if (take) {
-        return <TakeOrderButton destinationChain={destinationChain} token={token} amount={amount}/>
-    }
-    return <CreateOrderButton destinationChain={destinationChain} token={token} amount={amount}/>
+
+
+    return <HandleOrderButton
+    token={token}
+    amount={amount}
+    destinationChain={destinationChain}/>
+}
+
+
+const HandleOrderButton = ({destinationChain, token, amount}: ActionProps) => {
+    const destinationAddresses = getAddressesByChainId(destinationChain!.id)
+
+    const {data, isLoading} = useMatchingOrderValue({
+        destinationChainId: destinationChain!.id,
+        selectedToken: destinationAddresses.Meow,
+        sourceToken: token!})
+
+
+    return <>
+        <CreateOrderButton destinationChain={destinationChain} token={token} amount={amount}/>
+        <TakeOrderButton disable={isLoading || data < amount!} destinationChain={destinationChain} token={token} amount={amount}/>
+    </>
+
+
 }
 
 
@@ -168,18 +186,14 @@ const CreateOrderButton = ({destinationChain, token, amount}: ActionProps) => {
         token: token!,
         amount: amount!
     })
-    useEffect(() => {
-        if (isSuccess) {
-            toast.success('Order has been placed', {autoClose: 3000})
-        }
-    }, [isSuccess]);
+
 
 
     return <Button variant="CTA" isLoading={isLoading} className="w-full mt-4" onClick={() => write && write()}>
         Create Order
     </Button>
 }
-const TakeOrderButton = ({destinationChain, token, amount}: ActionProps) => {
+const TakeOrderButton = ({destinationChain, token, amount, disable}: ActionProps & {disable: boolean}) => {
     //TODO IT ONLY SUPPORT MEOW ATM
     const destinationAddresses = getAddressesByChainId(destinationChain!.id)
     const {write, isLoading, isError, isSuccess} = useTakeSwap({
@@ -195,7 +209,7 @@ const TakeOrderButton = ({destinationChain, token, amount}: ActionProps) => {
     }, [isSuccess]);
 
 
-    return <Button variant="CTA" isLoading={isLoading} className="w-full mt-4" onClick={() => write && write()}>
+    return <Button variant="CTA" disabled={disable} isLoading={isLoading} className="w-full mt-4" onClick={() => write && write()}>
         Take Order
     </Button>
 }
