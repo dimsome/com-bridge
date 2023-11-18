@@ -106,6 +106,10 @@ The contracts are deployed on the Base testnet with the following addresses:
 
 (Bridging not possible at the moment, only base contracts deployed because of missing crosschain messaging protocol)
 
+### Full list of deployed contracts
+
+[Here is a list of all the contracts that are deployed.](./packages/contracts/README.md)
+
 ### CoW-Swap (Honorable mention)
 
 While we don't use CoW-Swap directly, we are inspired by their approach of Coincidence of intents and use a similar approach to match orders. Isn't it a purrrfect extension of their idea?
