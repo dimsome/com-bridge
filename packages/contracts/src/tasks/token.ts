@@ -107,7 +107,7 @@ subtask(
     const tokenContract = ERC20__factory.connect(tokenConfig.address, signer);
 
     const recipientAddress = resolveAddress(recipient, chain);
-    const amountBN = parseUnits(amount, tokenConfig.decimals);
+    const amountBN = parseUnits(amount.toString(), tokenConfig.decimals);
 
     const desc = `${signerAddress} transfers ${formatUnits(
       amountBN,
