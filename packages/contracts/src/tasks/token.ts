@@ -107,7 +107,7 @@ subtask(
     const tokenContract = ERC20__factory.connect(tokenConfig.address, signer);
 
     const recipientAddress = resolveAddress(recipient, chain);
-    const amountBN = formatUnits(amount, tokenConfig.decimals);
+    const amountBN = parseUnits(amount, tokenConfig.decimals);
 
     const desc = `${signerAddress} transfers ${formatUnits(
       amountBN,
@@ -168,7 +168,7 @@ subtask(
 
     const senderAddress = resolveAddress(sender, chain);
     const recipientAddress = resolveAddress(recipient, chain);
-    const amountBN = formatUnits(amount, tokenConfig.decimals);
+    const amountBN = parseUnits(amount, tokenConfig.decimals);
 
     const tx = await tokenContract.transferFrom(
       senderAddress,
@@ -354,7 +354,8 @@ subtask("token-deploy", "Deploys a new mock ERC20 token")
     const { speed, name, symbol, decimals, supply } = taskArgs;
     const signer = await getSigner(hre, speed);
 
-    const constructorArguments = [name, symbol, decimals, supply];
+    const initialSupply = parseUnits(supply.toString(), decimals);
+    const constructorArguments = [name, symbol, decimals, initialSupply];
     const token = await deployContract(
       new MockERC20__factory(signer),
       `Token ${name} (${symbol})`,

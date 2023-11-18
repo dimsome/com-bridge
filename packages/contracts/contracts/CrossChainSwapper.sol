@@ -108,7 +108,7 @@ contract CrossChainSwapper is CCIPReceiver {
 
     function deposit(address token, uint256 amount) external {
         // Check the token is valid
-        if (validSourceTokens[token]) revert InvalidToken();
+        if (!validSourceTokens[token]) revert InvalidToken();
         if (amount == 0 || amount > type(uint128).max) revert InvalidAmount();
 
         // Transfer the token from the user to this Swapper contract
@@ -119,7 +119,7 @@ contract CrossChainSwapper is CCIPReceiver {
 
     function withdraw(address token, uint256 amount) external {
         // Check the token is valid
-        if (validSourceTokens[token]) revert InvalidToken();
+        if (!validSourceTokens[token]) revert InvalidToken();
         if (amount == 0 || amount >= type(uint128).max) revert InvalidAmount();
         if (amount > userBalances[msg.sender][token].unlocked)
             revert NotEnoughUnlockedTokens();

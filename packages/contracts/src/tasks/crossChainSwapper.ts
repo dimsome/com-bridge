@@ -86,6 +86,10 @@ subtask("ccs-deploy", "Deploys a new Cross Chain Swapper contract").setAction(
       `Cross Chain Swapper to ${chain}`,
       constructorArguments
     );
+    // const crossChainSwapper = CrossChainSwapper__factory.connect(
+    //   "0x68c785265D7B7D775bb115fF4bD9B33fc4C26b86",
+    //   signer
+    // );
 
     await verifyEtherscan(hre, {
       address: crossChainSwapper.address,

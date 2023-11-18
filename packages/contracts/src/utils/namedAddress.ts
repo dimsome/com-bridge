@@ -19,7 +19,7 @@ export const resolveNamedAddress = (
   } else if (chain === Chain.sepolia) {
     switch (contractName) {
       case "CrossChainSwapper":
-        return "0x1E556E893C4CDB189E6AAA27834e8B3d04Dc02c7";
+        return "0x035CC09B3Fc67f97dd5A0024cfb290CD766f9A33";
       case "CCIP_Router":
         return "0xd0daae2231e9cb96b94c8512223533293c3693bf";
       default:

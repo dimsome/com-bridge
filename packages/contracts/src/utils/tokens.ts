@@ -17,7 +17,7 @@ export function isToken(asset: unknown): asset is Token {
 
 export const sMeow: Token = {
   symbol: "Meow",
-  address: "0x4a3C098D5D1422574015A55d7ad9Cf904226a2e6",
+  address: "0x84d7F52cAF3C4A4EAdC998FD102fD23134159495",
   chain: Chain.sepolia,
   decimals: 18,
 } as const;
@@ -33,7 +33,7 @@ export const sLink: Token = {
 
 export const fMeow: Token = {
   symbol: "Meow",
-  address: "0x2237e5dee801a432965210933c1F26696565303d",
+  address: "0xBe9BfA969e13BDfDf04638Fe52256D0be4A7BaDF",
   chain: Chain.sepolia,
   decimals: 18,
 } as const;

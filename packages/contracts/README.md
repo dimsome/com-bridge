@@ -33,8 +33,8 @@ Token Swap
 
 | Chain         | Meow Token                                                                                                                    | Cross Chain Swapper |
 | ------------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------------- |
-| Sepolia       | [0x4a3C098D5D1422574015A55d7ad9Cf904226a2e6](https://sepolia.etherscan.io/address/0x4a3C098D5D1422574015A55d7ad9Cf904226a2e6) |                     |
-| Avalance Fuji | [0x2237e5dee801a432965210933c1F26696565303d](https://testnet.snowtrace.io/address/0x2237e5dee801a432965210933c1F26696565303d) |                     |
+| Sepolia       | [0x84d7F52cAF3C4A4EAdC998FD102fD23134159495](https://sepolia.etherscan.io/address/0x84d7F52cAF3C4A4EAdC998FD102fD23134159495) |                     |
+| Avalance Fuji | [0xBe9BfA969e13BDfDf04638Fe52256D0be4A7BaDF](https://testnet.snowtrace.io/address/0xBe9BfA969e13BDfDf04638Fe52256D0be4A7BaDF) |                     |
 
 ```sh
 export PRIVATE_KEY=
@@ -43,7 +43,7 @@ export PRIVATE_KEY=
 yarn task token-deploy --name meow --symbol meow --decimals 18  --network sepolia
 yarn task ccs-deploy --network sepolia
 # Approve the CrossChainSwapper to transfer Meow tokens
-yarn task token-approve --token Meow --spender 0x1E556E893C4CDB189E6AAA27834e8B3d04Dc02c7 --network sepolia
+yarn task token-approve --token Meow --spender CrossChainSwapper --network sepolia
 # Deposit Meow tokens into the CrossChainSwapper
 yarn task ccs-deposit --amount 10 --token Meow --network sepolia
 
