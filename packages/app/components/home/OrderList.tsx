@@ -8,13 +8,17 @@ import ChainArrow from "~/chain_arrow.svg";
 import {MakerSwapData, useMakerSwaps} from "@/src/hooks/useMakerSwaps";
 import {useNetwork, useToken} from "wagmi";
 import {formatUnits} from "ethers";
+import {useOrderDoneListener} from "@/components/events/events";
 
 type OrderListProps = {
     className?: string;
 }
 export const OrderList = ({className}: OrderListProps) => {
-    const {data, isLoading} = useMakerSwaps();
-    return <Card>
+    const {data, isLoading, refetch} = useMakerSwaps();
+    useOrderDoneListener(() => {
+        refetch()
+    })
+    return <Card className="mb-20">
         <div className="flex justify-between">
             <span>Your orders</span>
             <div className="flex gap-4">
@@ -29,7 +33,7 @@ export const OrderList = ({className}: OrderListProps) => {
             </div>
         </div>
         <Separator/>
-        <div className='min-h-[300px] '>
+        <div className='min-h-[300px]'>
             {isLoading &&  <div className="animate-pulse"> <Image
                 src={"/ChillCat.png"}
                 height={168}
@@ -37,7 +41,7 @@ export const OrderList = ({className}: OrderListProps) => {
                 className='mx-auto my-20'
                 alt={"Meditating cat"}
             /> </div>}
-            {!isLoading && data?.length && <List data={data!}/>}
+            {!isLoading && !!data?.length && <List data={data!}/>}
             {!isLoading && !data?.length && <NoOrders/>}
 
 
