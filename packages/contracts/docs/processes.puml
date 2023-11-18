@@ -1,0 +1,131 @@
+@startuml
+
+title "Cross Chain Swap"
+
+' actor "Market\nTaker" as mt1
+actor "Market\nMaker" as mm
+box "Chain 1" #LightCyan
+participant "Token 1" as t1
+participant "Swapper 1" as s1
+participant "RouterClient" as r1 <<ChainLink>>
+participant "OnRamp" as or1 <<ChainLink>>
+end box
+
+participant CCIP as ccip <<ChainLink>>
+
+box "Chain 2" #LightGreen
+participant "OnRamp" as or2 <<ChainLink>>
+participant "RouterClient" as r2 <<ChainLink>>
+participant "Swapper 2" as s2
+participant "Token 2" as t2
+end box
+
+actor "Market\nTaker" as mt
+
+mm -> t1 : approve(\nSwapper 1,\namount)
+activate t1
+return
+
+mm -> s1 : deposit(\nToken 1,\namount)
+activate s1
+s1 -> t1 : transferFrom(\nMaker,\nSwapper 1\namount)
+activate t1
+return
+return
+
+mt -> t2 : approve(\nSwapper 2,\namount)
+activate t2
+return
+
+mt -> s2 : deposit(Token 2, amount)
+activate s2
+s2 -> t2 : transferFrom(\nMaker,\nSwapper 2,\namount)
+activate t2
+return
+return
+
+mm -> s1 : makeSwap(\nToken 1,\nchain 2,\nfee,\namount)
+activate s1
+s1 -> s1
+note left : lock maker's tokens
+s1 -> s1
+note left : add to liquidity pool
+s1 --> mt : MakeSwap(Token 2, chain 2, fee, amount)
+note left : emit event
+return
+
+mt -> s2 : takeSwap(\nToken 2,\ntake amount)
+activate s2
+s2 -> s2
+note left : lock taker's tokens
+s2 -> s2 : encode(\ntoken 2,\nfee,\nchain 1,\namount)
+note left : encode CCIP message
+s2 -> r2 : ccipSend(\nchain 1,\nmessage)
+activate r2
+r2 -> or2 : forwardFromRouter(\nmessage,\nCCIP fee,\nswapper 2)
+activate or2
+or2 --> ccip : CCIPSendRequested(\nmessage)
+note right : emit event
+return
+return
+return
+
+activate ccip
+ccip -> s1 : ccipReceive(message)
+activate s1
+s1 -> s1 
+note left : remove taker amount\nfrom liquidity pool
+
+s1 -> s1 
+note left : add taker amount to\ntaker's unlocked tokens
+
+' for each Maker Swap in the queue
+loop Maker Swaps until all taker amount settled
+    s1 -> s1
+    note left : remove maker's locked tokens
+    s1 -> s1
+    note left : add to settled maker swaps
+end
+
+s1 -> s1 : encode(\nsettled maker swaps)
+note left : encode CCIP message
+
+s1 -> r1 : ccipSend(\nchain 2,\nmessage)
+activate r1
+r1 -> or1 : forwardFromRouter(\nmessage,\nCCIP fee,\nswapper 1)
+activate or1
+or1 --> ccip : CCIPSendRequested(\nmessage)
+note left : emit event
+return
+return
+return
+
+' activate ccip
+ccip -> s2 : ccipReceive(message)
+activate s2
+s2 -> s2 : decode(\nmessage)
+note left : decode maker swaps
+s2 -> s2 
+note left : remove taker's locked tokens
+
+loop maker swaps
+s2 -> s2
+note left: add to maker's unlocked tokens
+end
+return
+
+mt -> s1 : withdraw(\nToken 1,\namount)
+activate s1
+s1 -> t1 : transfer(\nTaker,\namount)
+activate t1
+return
+return
+
+mm -> s2 : withdraw(\nToken 2,\namount)
+activate s2
+s2 -> t2 : transfer(\nMaker,\namount)
+activate t2
+return
+return
+
+@enduml
