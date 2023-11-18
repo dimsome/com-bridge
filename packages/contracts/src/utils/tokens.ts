@@ -16,7 +16,7 @@ export function isToken(asset: unknown): asset is Token {
 /// Sepolia
 
 export const sMeow: Token = {
-  symbol: "Meow",
+  symbol: "meow",
   address: "0x84d7F52cAF3C4A4EAdC998FD102fD23134159495",
   chain: Chain.sepolia,
   decimals: 18,
@@ -32,9 +32,9 @@ export const sLink: Token = {
 /// Avalanche Fuji
 
 export const fMeow: Token = {
-  symbol: "Meow",
-  address: "0xBe9BfA969e13BDfDf04638Fe52256D0be4A7BaDF",
-  chain: Chain.sepolia,
+  symbol: "meow",
+  address: "0xa3C235f09F1491fbc714efDAA7504089E49Df1b2",
+  chain: Chain.fuji,
   decimals: 18,
 } as const;
 

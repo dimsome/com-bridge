@@ -44,7 +44,10 @@ const config: HardhatUserConfig = {
     mainnet: {
       url: process.env.NODE_URL ?? "",
     },
-    testnet: {
+    fuji: {
+      url: process.env.NODE_URL ?? "",
+    },
+    mumbai: {
       url: process.env.NODE_URL ?? "",
     },
   },
@@ -68,7 +71,7 @@ const config: HardhatUserConfig = {
     target: "ethers-v5",
   },
   tracer: {
-    tasks: ["ccs-deposit", "ccs-make-swap"],
+    tasks: ["ccs-deposit", "ccs-make-swap", "ccs-take-swap", "ccs-dest"],
   },
 };
 

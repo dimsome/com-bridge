@@ -31,24 +31,64 @@ Token Swap
 
 # Contract Deployments
 
-| Chain         | Meow Token                                                                                                                    | Cross Chain Swapper |
-| ------------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------------- |
-| Sepolia       | [0x84d7F52cAF3C4A4EAdC998FD102fD23134159495](https://sepolia.etherscan.io/address/0x84d7F52cAF3C4A4EAdC998FD102fD23134159495) |                     |
-| Avalance Fuji | [0xBe9BfA969e13BDfDf04638Fe52256D0be4A7BaDF](https://testnet.snowtrace.io/address/0xBe9BfA969e13BDfDf04638Fe52256D0be4A7BaDF) |                     |
+| Chain         | Meow Token                                                                                                                    | Cross Chain Swapper                                                                                                           |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| Sepolia       | [0x84d7F52cAF3C4A4EAdC998FD102fD23134159495](https://sepolia.etherscan.io/address/0x84d7F52cAF3C4A4EAdC998FD102fD23134159495) | [0xA3C1923957c91704BEd2B5814108a730a9b75Eb7](https://sepolia.etherscan.io/address/0xA3C1923957c91704BEd2B5814108a730a9b75Eb7) |
+| Avalance Fuji | [0xa3C235f09F1491fbc714efDAA7504089E49Df1b2](https://testnet.snowtrace.io/address/0xa3C235f09F1491fbc714efDAA7504089E49Df1b2) | [0x4a3C098D5D1422574015A55d7ad9Cf904226a2e6](https://testnet.snowtrace.io/address/0x4a3C098D5D1422574015A55d7ad9Cf904226a2e6) |
 
 ```sh
 export PRIVATE_KEY=
 
-# Meow token on Sepolia
-yarn task token-deploy --name meow --symbol meow --decimals 18  --network sepolia
-yarn task ccs-deploy --network sepolia
-# Approve the CrossChainSwapper to transfer Meow tokens
-yarn task token-approve --token Meow --spender CrossChainSwapper --network sepolia
-# Deposit Meow tokens into the CrossChainSwapper
-yarn task ccs-deposit --amount 10 --token Meow --network sepolia
-# Maker creates a swap
-yarn task ccs-make-swap --amount 8 --token Meow --network sepolia
+## Sepolia
 
-# Meow token on Avalanche Fuji
-yarn task token-deploy --name meow --symbol meow --decimals 18  --network testnet
+# Deploy the Meow token
+yarn task token-deploy --name meow --symbol meow --decimals 18  --network sepolia
+# Transfer to team
+yarn task token-transfer --token meow --amount 100000  --recipient 0xD5fC6be6dA120227E5ACB5B6c1006A892b85BB32 --network sepolia
+yarn task token-transfer --token meow --amount 100000  --recipient 0x589F6Cc29e9a08db99ab6896B2Fb3BBE28245233 --network sepolia
+
+## Avalanche Fuji
+
+# Deploy the Meow token
+yarn task token-deploy --name meow --symbol meow --decimals 18  --network fuji
+# Transfer to team
+yarn task token-transfer --token meow --amount 100000  --recipient 0xD5fC6be6dA120227E5ACB5B6c1006A892b85BB32 --network fuji
+yarn task token-transfer --token meow --amount 100000  --recipient 0x589F6Cc29e9a08db99ab6896B2Fb3BBE28245233 --network fuji
+
+# Deploy the CrossChainSwapper
+yarn task ccs-deploy --network fuji
+
+## Sepolia
+
+# Deploy the CrossChainSwapper
+yarn task ccs-deploy --network sepolia
+# Set the Avalanche Fuji destination details
+yarn task ccs-dest --chain-id 43113 --network sepolia
+
+# Approve the CrossChainSwapper to transfer Meow tokens
+yarn task token-approve --token meow --spender CrossChainSwapper --network sepolia
+# Deposit Meow tokens into the CrossChainSwapper
+yarn task ccs-deposit --amount 10 --token meow --network sepolia
+
+## Avalanche Fuji
+
+# Set the Sepolia destination details
+yarn task ccs-dest --chain-id 11155111 --network fuji
+
+# Approve the CrossChainSwapper to transfer Meow tokens
+yarn task token-approve --token meow --spender CrossChainSwapper --network fuji
+# Deposit Meow tokens into the CrossChainSwapper
+yarn task ccs-deposit --amount 20 --token meow --network fuji
+# Taker creates a swap
+
+## Sepolia
+
+# Maker creates a swap
+yarn task ccs-make-swap --amount 8 --token meow --network sepolia
+
+## Avalanche Fuji
+
+# Taker matches the swap
+yarn task ccs-take-swap --amount 8 --token meow --network fuji
+
 ```

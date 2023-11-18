@@ -7,7 +7,7 @@ export const contractNames = [
 ] as const;
 export type ContractNames = (typeof contractNames)[number];
 
-export const resolveNamedAddress = (
+export const resolveName = (
   contractName: ContractNames,
   chain: Chain
 ): string | undefined => {
@@ -23,17 +23,21 @@ export const resolveNamedAddress = (
   } else if (chain === Chain.sepolia) {
     switch (contractName) {
       case "CrossChainSwapper":
-        return "0x29074D3F45503D954209Af19439c4Dc2520EED65";
+        return "0xA3C1923957c91704BEd2B5814108a730a9b75Eb7";
       case "CCIP_Router":
         return "0xd0daae2231e9cb96b94c8512223533293c3693bf";
+      case "CCIP_ChainSelector":
+        return "16015286601757825753";
       default:
     }
   } else if (chain === Chain.fuji) {
     switch (contractName) {
       case "CrossChainSwapper":
-        return "0x57509d4aB51940829C496c740538883Fdfae2223";
+        return "0x4a3C098D5D1422574015A55d7ad9Cf904226a2e6";
       case "CCIP_Router":
         return "0x554472a2720e5e7d5d3c817529aba05eed5f82d8";
+      case "CCIP_ChainSelector":
+        return "14767482510784806043";
       default:
     }
   }
