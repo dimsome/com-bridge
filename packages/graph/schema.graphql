@@ -11,7 +11,8 @@ type MakerSwaps @entity(immutable: true) {
   id: Bytes!
   messageId: Bytes! # bytes32
   destinationPoolKey: Bytes! # bytes32
-  filledMakerSwaps: [Bytes!]! # tuple[]
+  filledMakerSwapsAdress: [Bytes!] # tuple[]
+  filledMakerSwapsAmount: [BigInt!]
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!

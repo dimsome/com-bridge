@@ -38,7 +38,9 @@ subtask("ccs-deposit", "Deposits Meow in the Cross Chain Swapper contract")
     log(
       `About to deposit ${taskArgs.amount} ${token.symbol} into CrossChainSwapper with address ${swapperAddress}`
     );
-    const tx = await swapper.deposit(token.address, amountBN);
+    const tx = await swapper.deposit(token.address, amountBN, {
+      gasLimit: 1000000,
+    });
     await logTxDetails(
       tx,
       `deposit ${taskArgs.amount} ${token.symbol} into CrossChainSwapper with address ${swapperAddress}`
@@ -212,15 +214,15 @@ subtask("ccs-deploy", "Deploys a new Cross Chain Swapper contract").setAction(
       linkToken.address,
     ];
     log(`About to deploy CrossChainSwapper contract on ${chain}`);
-    const crossChainSwapper = await deployContract(
-      new CrossChainSwapper__factory(linkedLibraryAddresses, signer),
-      `Cross Chain Swapper to ${chain}`,
-      constructorArguments
-    );
-    // const crossChainSwapper = CrossChainSwapper__factory.connect(
-    //   "0x217d85e18c4045c39eDd0266be89A39461C42702",
-    //   signer
+    // const crossChainSwapper = await deployContract(
+    //   new CrossChainSwapper__factory(linkedLibraryAddresses, signer),
+    //   `Cross Chain Swapper to ${chain}`,
+    //   constructorArguments
     // );
+    const crossChainSwapper = CrossChainSwapper__factory.connect(
+      "0x1A633671F6455213809dcC2Af44e1B787e9bfD07",
+      signer
+    );
 
     await verifyEtherscan(hre, {
       address: crossChainSwapper.address,

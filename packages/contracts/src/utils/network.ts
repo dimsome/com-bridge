@@ -53,6 +53,12 @@ export const getChain = (hre: HardhatRuntimeEnvironment): Chain => {
   if (hre?.network.name === "mumbai") {
     return Chain.mumbai;
   }
+  if (hre?.network.name === "arbitrum") {
+    return Chain.arbitrum;
+  }
+  if (hre?.network.name === "arbitrumGoerli") {
+    return Chain.arbitrumGoerli;
+  }
   if (hre?.network.name === "celo") {
     return Chain.celo;
   }

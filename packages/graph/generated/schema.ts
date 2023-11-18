@@ -187,17 +187,44 @@ export class MakerSwaps extends Entity {
     this.set("destinationPoolKey", Value.fromBytes(value));
   }
 
-  get filledMakerSwaps(): Array<Bytes> {
-    let value = this.get("filledMakerSwaps");
+  get filledMakerSwapsAdress(): Array<Bytes> | null {
+    let value = this.get("filledMakerSwapsAdress");
     if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
+      return null;
     } else {
       return value.toBytesArray();
     }
   }
 
-  set filledMakerSwaps(value: Array<Bytes>) {
-    this.set("filledMakerSwaps", Value.fromBytesArray(value));
+  set filledMakerSwapsAdress(value: Array<Bytes> | null) {
+    if (!value) {
+      this.unset("filledMakerSwapsAdress");
+    } else {
+      this.set(
+        "filledMakerSwapsAdress",
+        Value.fromBytesArray(<Array<Bytes>>value)
+      );
+    }
+  }
+
+  get filledMakerSwapsAmount(): Array<BigInt> | null {
+    let value = this.get("filledMakerSwapsAmount");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigIntArray();
+    }
+  }
+
+  set filledMakerSwapsAmount(value: Array<BigInt> | null) {
+    if (!value) {
+      this.unset("filledMakerSwapsAmount");
+    } else {
+      this.set(
+        "filledMakerSwapsAmount",
+        Value.fromBigIntArray(<Array<BigInt>>value)
+      );
+    }
   }
 
   get blockNumber(): BigInt {

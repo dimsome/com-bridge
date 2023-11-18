@@ -45,12 +45,16 @@ Token Swap
 
 ## Current Deployments
 
-| Chain         | Meow Token                                                                                                                    | Cross Chain Swapper                                                                                                           |
-| ------------- | ----------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| Sepolia       | [0x84d7F52cAF3C4A4EAdC998FD102fD23134159495](https://sepolia.etherscan.io/address/0x84d7F52cAF3C4A4EAdC998FD102fD23134159495) | [0xc0D73Aae963CdD12a91CE98E6c059BbFAa5C732E](https://sepolia.etherscan.io/address/0xc0D73Aae963CdD12a91CE98E6c059BbFAa5C732E) |
-| Avalance Fuji | [0xa3C235f09F1491fbc714efDAA7504089E49Df1b2](https://testnet.snowtrace.io/address/0xa3C235f09F1491fbc714efDAA7504089E49Df1b2) | [0x914F05D00C55a852D876828CedEa4b7f84d1f841](https://testnet.snowtrace.io/address/0x914F05D00C55a852D876828CedEa4b7f84d1f841) |
+| Chain           | Meow Token                                                                                                                      | Cross Chain Swapper                                                                                                           |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| Sepolia         | [0x84d7F52cAF3C4A4EAdC998FD102fD23134159495](https://sepolia.etherscan.io/address/0x84d7F52cAF3C4A4EAdC998FD102fD23134159495)   | [0x1A633671F6455213809dcC2Af44e1B787e9bfD07](https://sepolia.etherscan.io/address/0x1A633671F6455213809dcC2Af44e1B787e9bfD07) |
+| Avalance Fuji   | [0xa3C235f09F1491fbc714efDAA7504089E49Df1b2](https://testnet.snowtrace.io/address/0xa3C235f09F1491fbc714efDAA7504089E49Df1b2)   | [0x94c7a77Ae12532644dcf2066290A631125dBCf48](https://testnet.snowtrace.io/address/0x94c7a77Ae12532644dcf2066290A631125dBCf48) |
+| Polygon Mumbai  | [0x75281fFc939bc0D013964954959793f760342B11](https://mumbai.polygonscan.com/address/0x75281fFc939bc0D013964954959793f760342B11) |                                                                                                                               |
+| Arbitrum Goerli | [0x75281fFc939bc0D013964954959793f760342B11](https://goerli.arbiscan.io/address/0x75281fFc939bc0D013964954959793f760342B11)     |                                                                                                                               |
 
-## Execution script
+# Execution scripts
+
+## Sepolia to Avalanche Fuji
 
 ```sh
 export PRIVATE_KEY=
@@ -191,3 +195,94 @@ Avalanche Fuji side sending a CCIP message with the taker swap.
 Sepolia side receiving CCIP message and sending the filled maker swaps back to Fuji
 
 ![Sepolia receive and send](./docs/bd028a22.svg)
+
+## Polygon Mumbai to Arbitrum Goerli
+
+```sh
+export PRIVATE_KEY=
+export NODE_URL_POLLY=
+export ETHERSCAN_KEY_POLLY=
+export NODE_URL_ARB=
+export ETHERSCAN_KEY_ARB=
+
+## Polygon Mumbai
+
+export ETHERSCAN_KEY=$ETHERSCAN_KEY_POLLY
+export NODE_URL=$NODE_URL_POLLY
+
+# Deploy the Meow token
+yarn task token-deploy --name meow --symbol meow --decimals 18  --network mumbai
+# Transfer to team
+yarn task token-transfer --token meow --amount 100000  --recipient Dimitri --network mumbai
+yarn task token-transfer --token meow --amount 100000  --recipient Adam --network mumbai
+
+## Arbitrum Goerli
+
+export ETHERSCAN_KEY=$ETHERSCAN_KEY_ARB
+export NODE_URL=$NODE_URL_ARB
+
+# Deploy the Meow token
+yarn task token-deploy --name meow --symbol meow --decimals 18  --network arbitrumGoerli
+# Transfer to team
+yarn task token-transfer --token meow --amount 100000  --recipient Dimitri --network arbitrumGoerli
+yarn task token-transfer --token meow --amount 100000  --recipient Adam --network arbitrumGoerli
+
+# Deploy selector library
+yarn task ccs-deploy-lib --network arbitrumGoerli
+# Deploy the CrossChainSwapper
+yarn task ccs-deploy --network arbitrumGoerli
+# update CrossChainSwapper address in namedAddress.ts
+
+# Send the Swapper some Link to pay for CCIP
+yarn task token-transfer --token Link --amount 3 --recipient CrossChainSwapper --network arbitrumGoerli
+
+## Polygon Mumbai
+
+export ETHERSCAN_KEY=$ETHERSCAN_KEY_POLLY
+export NODE_URL=$NODE_URL_POLLY
+
+# Deploy selector library
+yarn task ccs-deploy-lib --network mumbai
+# Deploy the CrossChainSwapper
+yarn task ccs-deploy --network mumbai
+# update CrossChainSwapper address in namedAddress.ts
+
+# Send the Swapper some Link to pay for CCIP
+yarn task token-transfer --token Link --amount 3 --recipient CrossChainSwapper --network mumbai
+# Set the Arbitrum Goerli destination details
+yarn task ccs-dest --chain-id 421613 --network mumbai
+
+# Approve the CrossChainSwapper to transfer Meow tokens
+yarn task token-approve --token meow --spender CrossChainSwapper --network mumbai
+# Deposit Meow tokens into the CrossChainSwapper
+yarn task ccs-deposit --amount 1000 --token meow --network mumbai
+
+## Arbitrum Goerli
+
+export ETHERSCAN_KEY=$ETHERSCAN_KEY_ARB
+export NODE_URL=$NODE_URL_ARB
+
+# Set the Polygon Mumbai destination details
+yarn task ccs-dest --chain-id 80001 --network arbitrumGoerli
+
+# Approve the CrossChainSwapper to transfer Meow tokens
+yarn task token-approve --token meow --spender CrossChainSwapper --network arbitrumGoerli
+# Deposit Meow tokens into the CrossChainSwapper
+yarn task ccs-deposit --amount 2000 --token meow --network arbitrumGoerli
+
+## Polygon Mumbai
+
+export ETHERSCAN_KEY=$ETHERSCAN_KEY_POLLY
+export NODE_URL=$NODE_URL_POLLY
+
+# Maker creates a swap
+yarn task ccs-make-swap --amount 990 --token meow --network mumbai
+
+## Arbitrum Goerli
+
+export ETHERSCAN_KEY=$ETHERSCAN_KEY_ARB
+export NODE_URL=$NODE_URL_ARB
+
+# Taker matches the swap
+yarn task ccs-take-swap --amount 4 --token meow --network arbitrumGoerli
+```
