@@ -481,7 +481,7 @@ contract CrossChainSwapper is CCIPReceiver {
             );
             _settleMaker(poolKey, takerAmount);
         }
-        // if (selector == 0x00000) {
+        // if (selector == 0x0db2314b) {
         else {
             // maker(bytes32,uint256,MakerSwap[]) encoded message
             (

@@ -50,6 +50,8 @@ Token Swap
 | Sepolia       | [0x84d7F52cAF3C4A4EAdC998FD102fD23134159495](https://sepolia.etherscan.io/address/0x84d7F52cAF3C4A4EAdC998FD102fD23134159495) | [0xbE297B899dB97A161BD24058daB8751510951BB7](https://sepolia.etherscan.io/address/0xbE297B899dB97A161BD24058daB8751510951BB7) |
 | Avalance Fuji | [0xa3C235f09F1491fbc714efDAA7504089E49Df1b2](https://testnet.snowtrace.io/address/0xa3C235f09F1491fbc714efDAA7504089E49Df1b2) | [0xa47fBe44E10000F27Eb64698720AFA1bc6C50582](https://testnet.snowtrace.io/address/0xa47fBe44E10000F27Eb64698720AFA1bc6C50582) |
 
+## Execution script
+
 ```sh
 export PRIVATE_KEY=
 export NODE_URL_SEPOLIA=
@@ -175,3 +177,15 @@ export NODE_URL=$NODE_URL_FUJI
 yarn task ccs-dest --chain-id 11155111 --network fuji
 yarn task ccs-take-swap --amount 7 --token meow --network fuji
 ```
+
+## Proof of CCIP messages
+
+https://ccip.chain.link/tx/0xbd028151febc88d8c61479efe0eea6330b6f91507725f9930acdc6e47c628a22
+
+Avalanche Fuji side sending a CCIP message with the taker swap.
+
+![Fuji send](./docs/c3d7cd36.svg)
+
+Sepolia side receiving CCIP message and sending the filled maker swaps back to Fuji
+
+![Sepolia receive and send](./docs/bd028a22.svg)
