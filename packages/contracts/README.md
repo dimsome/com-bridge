@@ -84,7 +84,7 @@ yarn task ccs-deploy-lib --network fuji
 # Deploy the CrossChainSwapper
 yarn task ccs-deploy --network fuji
 # Send the Swapper some Link to pay for CCIP
-yarn task token-transfer --token Link --amount 3  --recipient CrossChainSwapper --network fuji
+yarn task token-transfer --token Link --amount 3 --recipient CrossChainSwapper --network fuji
 
 ## Sepolia
 
@@ -98,7 +98,7 @@ yarn task ccs-deploy --network sepolia
 # update CrossChainSwapper address in namedAddress.ts
 
 # Send the Swapper some Link to pay for CCIP
-yarn task token-transfer --token Link --amount 3  --recipient CrossChainSwapper --network sepolia
+yarn task token-transfer --token Link --amount 3 --recipient CrossChainSwapper --network sepolia
 # Set the Avalanche Fuji destination details
 yarn task ccs-dest --chain-id 43113 --network sepolia
 
