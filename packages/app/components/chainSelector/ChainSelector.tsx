@@ -3,6 +3,7 @@ import {Chain, useNetwork} from "wagmi";
 import {Fragment, useMemo} from "react";
 import {FaChevronDown} from "react-icons/fa";
 import {Menu, Transition} from "@headlessui/react";
+import {ChainImage} from "@/components/chainSelector/ChainImage";
 
 export type ChainSelectorProps = {
     className?: string;
@@ -40,13 +41,16 @@ export const ChainSelector = ({className, selectedChainId, onChainSelected, allo
                     leaveTo='transform opacity-0 scale-95'
                 >
                     <Menu.Items
-                        className='absolute z-20 left-0 mt-2 w-56 origin-top-left rounded-md bg-purple-500 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none text-white'>
-                        <div className='flex flex-col  items-stretch gap-1 px-1 py-1'>
+                        className='absolute z-20 left-0 mt-2 w-56 origin-top-left overflow-hidden rounded-md bg-primary-50 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none text-white'>
+                        <div className='flex flex-col  items-stretch gap-1'>
                             {selectableChains.map((value, index) => (
                                 <Menu.Item key={index}>
                                     {({active}) => (
                                         <button key={value.id} onClick={() => onChainSelected(value)}
-                                                className='py-1 px-4 hover:bg-pink-400/40 border border-transparent hover:border-pink-400'> {value.name}</button>
+                                                className={clsxm('py-2 px-4 flex items-center gap-2 text-black font-semibold',
+                                                    ' hover:bg-primary-500 hover:text-white')}>
+                                            <ChainImage chainId={value.id}/>
+                                            {value.name}</button>
 
                                     )}
                                 </Menu.Item>
