@@ -8,7 +8,7 @@ import { getSigner } from "../utils/signer";
 import { deployContract, logTxDetails } from "../utils/transaction";
 import { Chain, getChain } from "../utils/network";
 import { fMeow, sMeow } from "../utils/tokens";
-import { resolveNamedAddress } from "../utils/namedAddress";
+import { resolveName } from "../utils/namedAddress";
 import { resolveAssetToken } from "../utils/resolvers";
 import { parse } from "path";
 
@@ -26,10 +26,7 @@ subtask("ccs-deposit", "Deposits Meow in the Cross Chain Swapper contract")
     const signer = await getSigner(hre);
     const chain = await getChain(hre);
 
-    const swapperAddress = await resolveNamedAddress(
-      "CrossChainSwapper",
-      chain
-    );
+    const swapperAddress = await resolveName("CrossChainSwapper", chain);
     const swapper = CrossChainSwapper__factory.connect(swapperAddress, signer);
 
     const token = await resolveAssetToken(signer, chain, taskArgs.token);
@@ -60,10 +57,7 @@ subtask("ccs-make-swap", "Maker creates a swap")
     const signer = await getSigner(hre);
     const chain = await getChain(hre);
 
-    const swapperAddress = await resolveNamedAddress(
-      "CrossChainSwapper",
-      chain
-    );
+    const swapperAddress = await resolveName("CrossChainSwapper", chain);
     const swapper = CrossChainSwapper__factory.connect(swapperAddress, signer);
 
     const amountBN = parseUnits(taskArgs.amount.toString(), sMeow.decimals);
@@ -83,6 +77,35 @@ subtask("ccs-make-swap", "Maker creates a swap")
     );
   });
 task("ccs-make-swap").setAction(async (_, __, runSuper) => {
+  return runSuper();
+});
+
+subtask("ccs-dest", "Add destination data to the source Swapper")
+  .addParam("chainId", "Chain id", undefined, types.int)
+  .setAction(async (taskArgs, hre) => {
+    const { chainId } = taskArgs;
+    const signer = await getSigner(hre);
+    const chain = await getChain(hre);
+
+    const swapperAddress = await resolveName("CrossChainSwapper", chain);
+    log(`swapper address: ${swapperAddress}`);
+    const swapper = CrossChainSwapper__factory.connect(swapperAddress, signer);
+
+    const destinationData = {
+      ccipChainSelector: resolveName("CCIP_ChainSelector", chainId),
+      swapper: resolveName("CrossChainSwapper", chainId),
+    };
+
+    log(
+      `About to add destination data for chain ${chainId} to Swapper on ${chain}:`
+    );
+    log(`  CCIP Selector ${destinationData.ccipChainSelector}`);
+    log(`  Swapper       ${destinationData.swapper}`);
+
+    const tx = await swapper.addDestination(chainId, destinationData);
+    await logTxDetails(tx, `add destination for chain ${chainId}`);
+  });
+task("ccs-dest").setAction(async (_, __, runSuper) => {
   return runSuper();
 });
 
@@ -116,7 +139,7 @@ subtask("ccs-deploy", "Deploys a new Cross Chain Swapper contract").setAction(
     const constructorArguments = [
       chain,
       liquidityPools,
-      resolveNamedAddress("CCIP_Router", chain),
+      resolveName("CCIP_Router", chain),
       linkToken.address,
     ];
     log(`About to deploy CrossChainSwapper contract on ${chain}`);
@@ -126,7 +149,7 @@ subtask("ccs-deploy", "Deploys a new Cross Chain Swapper contract").setAction(
       constructorArguments
     );
     // const crossChainSwapper = CrossChainSwapper__factory.connect(
-    //   "0x68c785265D7B7D775bb115fF4bD9B33fc4C26b86",
+    //   "0xe99688A81C02bf72f02CBac04cDCA7f1108F72cb",
     //   signer
     // );
 

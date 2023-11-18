@@ -39,9 +39,15 @@ Token Swap
 ```sh
 export PRIVATE_KEY=
 
-# Meow token on Sepolia
+## Sepolia
+
+# Deploy the Meow token
 yarn task token-deploy --name meow --symbol meow --decimals 18  --network sepolia
+# Deploy the CrossChainSwapper
 yarn task ccs-deploy --network sepolia
+# Set the Avalanche Fuji destination details
+yarn task ccs-dest --chain-id 43113 --network sepolia
+
 # Approve the CrossChainSwapper to transfer Meow tokens
 yarn task token-approve --token Meow --spender CrossChainSwapper --network sepolia
 # Deposit Meow tokens into the CrossChainSwapper
@@ -49,6 +55,11 @@ yarn task ccs-deposit --amount 10 --token Meow --network sepolia
 # Maker creates a swap
 yarn task ccs-make-swap --amount 8 --token Meow --network sepolia
 
-# Meow token on Avalanche Fuji
-yarn task token-deploy --name meow --symbol meow --decimals 18  --network testnet
+## Avalanche Fuji
+
+# Deploy the Meow token
+yarn task token-deploy --name meow --symbol meow --decimals 18  --network fuji
+# Deploy the CrossChainSwapper
+yarn task ccs-deploy --network fuji
+
 ```

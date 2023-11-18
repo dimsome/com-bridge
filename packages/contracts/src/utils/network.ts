@@ -42,5 +42,11 @@ export const getChain = (hre: HardhatRuntimeEnvironment): Chain => {
   if (hre?.network.name === "sepolia") {
     return Chain.sepolia;
   }
+  if (hre?.network.name === "fuji") {
+    return Chain.fuji;
+  }
+  if (hre?.network.name === "mumbai") {
+    return Chain.mumbai;
+  }
   return Chain.mainnet;
 };
