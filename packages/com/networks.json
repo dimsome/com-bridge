@@ -1,8 +1,0 @@
-{
-  "sepolia": {
-    "CrossChainSwapper": {
-      "address": "0x84d7F52cAF3C4A4EAdC998FD102fD23134159495",
-      "startBlock": 4716821
-    }
-  }
-}

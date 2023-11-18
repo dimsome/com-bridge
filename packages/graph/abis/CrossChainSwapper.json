@@ -79,16 +79,10 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": true,
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "uint64",
-        "name": "destinationChainId",
-        "type": "uint64"
+        "indexed": false,
+        "internalType": "bytes32",
+        "name": "poolKey",
+        "type": "bytes32"
       },
       {
         "indexed": false,
@@ -133,6 +127,25 @@
     "anonymous": false,
     "inputs": [
       {
+        "indexed": false,
+        "internalType": "bytes",
+        "name": "messageData",
+        "type": "bytes"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes4",
+        "name": "selector",
+        "type": "bytes4"
+      }
+    ],
+    "name": "ReceiverCCIPMessage",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
         "indexed": true,
         "internalType": "bytes32",
         "name": "messageId",
@@ -147,6 +160,59 @@
     ],
     "name": "TakeSwap",
     "type": "event"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "chainId", "type": "uint256" },
+      {
+        "components": [
+          {
+            "internalType": "uint64",
+            "name": "ccipChainSelector",
+            "type": "uint64"
+          },
+          { "internalType": "address", "name": "swapper", "type": "address" }
+        ],
+        "internalType": "struct CrossChainSwapper.DestinationData",
+        "name": "_destination",
+        "type": "tuple"
+      }
+    ],
+    "name": "addDestination",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "sourceToken",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "destinationToken",
+            "type": "address"
+          },
+          {
+            "internalType": "uint64",
+            "name": "destinationChainId",
+            "type": "uint64"
+          },
+          { "internalType": "uint128", "name": "rate", "type": "uint128" }
+        ],
+        "internalType": "struct CrossChainSwapper.LiquidityPoolData",
+        "name": "_pool",
+        "type": "tuple"
+      }
+    ],
+    "name": "addLiquidityPool",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
     "inputs": [
@@ -172,18 +238,7 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "sourceToken", "type": "address" },
-      {
-        "internalType": "address",
-        "name": "destinationToken",
-        "type": "address"
-      },
-      {
-        "internalType": "uint64",
-        "name": "destinationChainId",
-        "type": "uint64"
-      },
-      { "internalType": "uint256", "name": "rate", "type": "uint256" },
+      { "internalType": "bytes32", "name": "poolKey", "type": "bytes32" },
       { "internalType": "uint256", "name": "amount", "type": "uint256" }
     ],
     "name": "cancelSwap",
@@ -231,6 +286,20 @@
     "name": "deposit",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "name": "destinations",
+    "outputs": [
+      {
+        "internalType": "uint64",
+        "name": "ccipChainSelector",
+        "type": "uint64"
+      },
+      { "internalType": "address", "name": "swapper", "type": "address" }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -282,23 +351,6 @@
         ],
         "internalType": "struct CrossChainSwapper.LiquidityPoolData",
         "name": "poolData",
-        "type": "tuple"
-      },
-      {
-        "components": [
-          {
-            "internalType": "uint64",
-            "name": "destinationChainSelector",
-            "type": "uint64"
-          },
-          {
-            "internalType": "address",
-            "name": "destinationSwapper",
-            "type": "address"
-          }
-        ],
-        "internalType": "struct CrossChainSwapper.CCIPData",
-        "name": "ccip",
         "type": "tuple"
       }
     ],

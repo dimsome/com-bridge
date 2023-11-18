@@ -6,7 +6,7 @@ import {
   beforeAll,
   afterAll
 } from "matchstick-as/assembly/index"
-import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts"
+import { Bytes, BigInt } from "@graphprotocol/graph-ts"
 import { MakeSwap } from "../generated/schema"
 import { MakeSwap as MakeSwapEvent } from "../generated/CrossChainSwapper/CrossChainSwapper"
 import { handleMakeSwap } from "../src/cross-chain-swapper"
@@ -17,14 +17,9 @@ import { createMakeSwapEvent } from "./cross-chain-swapper-utils"
 
 describe("Describe entity assertions", () => {
   beforeAll(() => {
-    let token = Address.fromString("0x0000000000000000000000000000000000000001")
-    let destinationChainId = BigInt.fromI32(234)
+    let poolKey = Bytes.fromI32(1234567890)
     let poolBalance = BigInt.fromI32(234)
-    let newMakeSwapEvent = createMakeSwapEvent(
-      token,
-      destinationChainId,
-      poolBalance
-    )
+    let newMakeSwapEvent = createMakeSwapEvent(poolKey, poolBalance)
     handleMakeSwap(newMakeSwapEvent)
   })
 
@@ -42,14 +37,8 @@ describe("Describe entity assertions", () => {
     assert.fieldEquals(
       "MakeSwap",
       "0xa16081f360e3847006db660bae1c6d1b2e17ec2a-1",
-      "token",
-      "0x0000000000000000000000000000000000000001"
-    )
-    assert.fieldEquals(
-      "MakeSwap",
-      "0xa16081f360e3847006db660bae1c6d1b2e17ec2a-1",
-      "destinationChainId",
-      "234"
+      "poolKey",
+      "1234567890"
     )
     assert.fieldEquals(
       "MakeSwap",
