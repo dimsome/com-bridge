@@ -55,7 +55,7 @@ It is core to our protocol and relies on the security of the Chainlink network.
 
 The contracts are deployed on the **Arbitrum Goerli** Testnet with the following addresses:
 
-- Meow Token:
+- Meow Token: [0x75281fFc939bc0D013964954959793f760342B11](https://goerli.arbiscan.io/address/0x75281fFc939bc0D013964954959793f760342B11)
 - CrossChainSwapper:
 
 Meow tokens can be bridge from Arbitrum testnet to
@@ -64,7 +64,7 @@ Meow tokens can be bridge from Arbitrum testnet to
 
 The contracts are deployed on the **Polygon Mumbai** Testnet with the following addresses:
 
-- Meow Token:
+- Meow Token: [0x75281fFc939bc0D013964954959793f760342B11](https://mumbai.polygonscan.com/address/0x75281fFc939bc0D013964954959793f760342B11)
 - CrossChainSwapper:
 
 Meow tokens can be bridge from Arbitrum testnet to
@@ -72,7 +72,7 @@ Meow tokens can be bridge from Arbitrum testnet to
 Additionally, contracts are deployed on **Polygon zkEVM Testnet** with the following addresses:
 
 - Meow Token:
-- CrossChainSwapper:
+- CrossChainSwapper: [0x04a05bE01C94d576B3eA3e824aF52668BAC606c0](https://testnet-zkevm.polygonscan.com/address/0x04a05be01c94d576b3ea3e824af52668bac606c0)
 
 (Bridging not possible at the moment, only base contracts deployed because of missing crosschain messaging protocol)
 
@@ -89,8 +89,8 @@ The contracts are deployed on the **Linea Testnet** with the following addresses
 
 The contracts are deployed on the **Scroll Sepolia Testnet** with the following addresses:
 
-- Meow Token:
-- CrossChainSwapper:
+- Meow Token: [0x75281fFc939bc0D013964954959793f760342B11](https://sepolia.scrollscan.dev/address/0x75281fFc939bc0D013964954959793f760342B11)
+- CrossChainSwapper: (not deployed yet, encountered an error)
 
 (Bridging not possible at the moment, only base contracts deployed because of missing crosschain messaging protocol)
 
@@ -101,13 +101,13 @@ The contracts are deployed on the **Mantle Testnet** with the following addresse
 - Meow Token:
 - CrossChainSwapper:
 
-(Bridging not possible at the moment, only base contracts deployed because of missing crosschain messaging protocol)
+(Bridging not possible at the mosment, only base contracts deployed because of missing crosschain messaging protocol)
 
 ### Celo
 
 The contracts are deployed on the **Celo Alfajores Testnet** with the following addresses:
 
-- Meow Token:
+- Meow Token: [0x75281fFc939bc0D013964954959793f760342B11](https://alfajores.celoscan.io/address/0x75281fFc939bc0D013964954959793f760342B11)
 - CrossChainSwapper:
 
 (Bridging not possible at the moment, only base contracts deployed because of missing crosschain messaging protocol)
