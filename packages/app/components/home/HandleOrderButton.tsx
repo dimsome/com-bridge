@@ -3,16 +3,15 @@ import {useMatchingOrderValue} from "@/src/hooks/useMatchingOrderValue";
 import {useMakeSwap} from "@/src/hooks/useMakeSwap";
 import Button from "@/components/button/Button";
 import {useTakeSwap} from "@/src/hooks/useTakeSwap";
-import React, {MutableRefObject, useEffect, useRef} from "react";
+import React, {useEffect, useRef} from "react";
 import {Id, toast} from "react-toastify";
-import {Address, Chain, useAccount, useNetwork} from "wagmi";
+import {Address, Chain, useNetwork} from "wagmi";
+// @ts-ignore
 import useSound from "use-sound";
 import {emitOrderDone} from "@/components/events/events";
-import {useBlockExplorer, useTxExplorer} from "@/src/hooks/useBlockExplorer";
+import {useTxExplorer} from "@/src/hooks/useBlockExplorer";
 import {ExternalLink} from "@/components/links/ExternalLink";
-import {ethers, formatUnits} from "ethers";
-import {getPublicClient} from "@wagmi/core";
-import {formatEther} from "viem";
+import {formatUnits} from "ethers";
 import {InfoItem} from "@/components/content/InfoItem";
 
 type HandleOrderButtonProps = {
@@ -29,18 +28,19 @@ export const HandleOrderButton = ({destinationChain, token, amount}: HandleOrder
     const {data, isLoading} = useMatchingOrderValue({
         destinationChainId: destinationChain!.id,
         selectedToken: destinationAddresses.Meow,
-        sourceToken: token!})
+        sourceToken: token!
+    })
 
     const config = {
         destinationChain,
         token,
         amount,
-        destinationToken : destinationAddresses.Meow
+        destinationToken: destinationAddresses.Meow
     }
 
 
     return <>
-        {(isLoading || data < amount!) &&<CreateOrderButton {...config}/>}
+        {(isLoading || data < amount!) && <CreateOrderButton {...config}/>}
         {!(isLoading || data < amount!) && <TakeOrderButton disable={isLoading || data < amount!} {...config}/>}
     </>
 
@@ -100,7 +100,7 @@ const CreateOrderButton = ({destinationChain, token, amount, destinationToken}: 
 
 
 }
-const TakeOrderButton = ({destinationChain, token, amount, disable, destinationToken}: OrderButtonProps & {disable: boolean}) => {
+const TakeOrderButton = ({destinationChain, token, amount, disable, destinationToken}: OrderButtonProps & { disable: boolean }) => {
     const {write, isLoading, isError, isSuccess, hash, gas} = useTakeSwap({
         destinationChainId: destinationChain!.id,
         destinationToken: destinationToken,
@@ -141,9 +141,8 @@ const TakeOrderButton = ({destinationChain, token, amount, disable, destinationT
     }, [isSuccess, link, play]);
 
 
-
     return <>
-        <InfoItem className='my-4  bg-[#26A18BFF] text-purple-500 font-bold' title={'Matching Order Found'} >
+        <InfoItem className='my-4  bg-[#26A18BFF] text-purple-500 font-bold' title={'Matching Order Found'}>
             <div className="text-purple-500 font-normal">
                 Your intent to bridge can be matched by a corresponding Make Order. You can execute this order directly!
             </div>
@@ -153,8 +152,9 @@ const TakeOrderButton = ({destinationChain, token, amount, disable, destinationT
             <span className='text-primary-50'>Gas Fees</span>
             <span>{gas && formatUnits(gas, chain?.nativeCurrency?.decimals ?? 18) || '-'} {chain?.nativeCurrency?.symbol}</span>
         </div>
-        <Button variant="CTA" disabled={disable} isLoading={isLoading} className="w-full mt-2" onClick={() => write && write()}>
-        Execute Order
-    </Button>
+        <Button variant="CTA" disabled={disable} isLoading={isLoading} className="w-full mt-2"
+                onClick={() => write && write()}>
+            Execute Order
+        </Button>
     </>
 }
