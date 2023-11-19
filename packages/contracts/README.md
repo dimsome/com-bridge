@@ -45,12 +45,12 @@ Token Swap
 
 ## Current Deployments
 
-| Chain           | Meow Token                                                                                                                      | Cross Chain Swapper                                                                                                           |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| Sepolia         | [0x84d7F52cAF3C4A4EAdC998FD102fD23134159495](https://sepolia.etherscan.io/address/0x84d7F52cAF3C4A4EAdC998FD102fD23134159495)   | [0x6340B990D14Fc67bcFb4Ee3E1c8987E27fA15a23](https://sepolia.etherscan.io/address/0x6340B990D14Fc67bcFb4Ee3E1c8987E27fA15a23) |
-| Avalance Fuji   | [0xa3C235f09F1491fbc714efDAA7504089E49Df1b2](https://testnet.snowtrace.io/address/0xa3C235f09F1491fbc714efDAA7504089E49Df1b2)   | [0xA88242Aec1fA30c0d77277D4eaAf4a23107CcA74](https://testnet.snowtrace.io/address/0xA88242Aec1fA30c0d77277D4eaAf4a23107CcA74) |
-| Polygon Mumbai  | [0x75281fFc939bc0D013964954959793f760342B11](https://mumbai.polygonscan.com/address/0x75281fFc939bc0D013964954959793f760342B11) |                                                                                                                               |
-| Arbitrum Goerli | [0x75281fFc939bc0D013964954959793f760342B11](https://goerli.arbiscan.io/address/0x75281fFc939bc0D013964954959793f760342B11)     |                                                                                                                               |
+| Chain           | Meow Token                                                                                                                      | Cross Chain Swapper                                                                                                             |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| Sepolia         | [0x84d7F52cAF3C4A4EAdC998FD102fD23134159495](https://sepolia.etherscan.io/address/0x84d7F52cAF3C4A4EAdC998FD102fD23134159495)   | [0x6340B990D14Fc67bcFb4Ee3E1c8987E27fA15a23](https://sepolia.etherscan.io/address/0x6340B990D14Fc67bcFb4Ee3E1c8987E27fA15a23)   |
+| Avalance Fuji   | [0xa3C235f09F1491fbc714efDAA7504089E49Df1b2](https://testnet.snowtrace.io/address/0xa3C235f09F1491fbc714efDAA7504089E49Df1b2)   | [0xA88242Aec1fA30c0d77277D4eaAf4a23107CcA74](https://testnet.snowtrace.io/address/0xA88242Aec1fA30c0d77277D4eaAf4a23107CcA74)   |
+| Polygon Mumbai  | [0x75281fFc939bc0D013964954959793f760342B11](https://mumbai.polygonscan.com/address/0x75281fFc939bc0D013964954959793f760342B11) | [0x49Bc3d55c3774aBb1210cA72bFCd6dCcA466f31f](https://mumbai.polygonscan.com/address/0x49Bc3d55c3774aBb1210cA72bFCd6dCcA466f31f) |
+| Arbitrum Goerli | [0x75281fFc939bc0D013964954959793f760342B11](https://goerli.arbiscan.io/address/0x75281fFc939bc0D013964954959793f760342B11)     | [0x710567b664632b643555947c55498c2fceB4110B](https://goerli.arbiscan.io/address/0x710567b664632b643555947c55498c2fceB4110B)     |
 
 # Execution scripts
 
