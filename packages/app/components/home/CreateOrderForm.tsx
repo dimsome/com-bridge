@@ -183,12 +183,12 @@ const ApproveButton = ({token, amount, onDone}: { token: Address, amount: bigint
 const FromChainSelector = () => {
     const {chain} = useNetwork();
     const [selectedChain, setSelectedChain] = useState(chain)
-    const {switchNetwork} = useSwitchNetwork({chainId: selectedChain?.id})
+    const {switchNetwork, isLoading} = useSwitchNetwork({chainId: selectedChain?.id})
     useEffect(() => {
-        if (chain?.id != selectedChain?.id && chain?.id && selectedChain?.id) {
+        if (!isLoading && chain?.id != selectedChain?.id && chain?.id && selectedChain?.id) {
             switchNetwork && switchNetwork(selectedChain?.id);
         }
-    }, [chain?.id, selectedChain?.id])
+    }, [chain?.id, isLoading, selectedChain?.id, switchNetwork])
     return <ChainSelector
         className="text-white"
         onChainSelected={(chain) => {
