@@ -41,8 +41,7 @@ TODO: Add all the lanes we support
 Support is limited to the chains that support the Chainlink CCIP protocol. Currently, the following lanes are supported:
 
 - Sepolia (Ethereum Testnet) <-> Avalanche Fuji (Avalanche Testnet)
-- Polygon Mumbai (Polygon Testnet) <-> Avalanche Fuji (Avalanche Testnet)
--
+- Base Goerli Testnet <-> Arbitrum Goerli Testnet
 
 ## Protocols used
 
