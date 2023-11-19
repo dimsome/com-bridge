@@ -1,12 +1,9 @@
-import {ToggleButton} from "@/components/button/ToggleButton";
 import {Separator} from "@/components/misc/Separator";
 import clsxm from "@/src/lib/clsxm";
 import {ChainSelector} from "@/components/chainSelector/ChainSelector";
 import TokenInput from "@/components/web3/TokenSelectorDialog";
 import {FaExchangeAlt} from "react-icons/fa";
-import {InfoItem} from "@/components/content/InfoItem";
 import Button from "@/components/button/Button";
-import {toast} from "react-toastify";
 import {Card} from "@/components/Card";
 import React, {useCallback, useEffect, useState} from "react";
 import {
@@ -182,17 +179,11 @@ const ApproveButton = ({token, amount, onDone}: { token: Address, amount: bigint
 
 const FromChainSelector = () => {
     const {chain} = useNetwork();
-    const [selectedChain, setSelectedChain] = useState(chain)
-    const {switchNetwork, isLoading} = useSwitchNetwork({chainId: selectedChain?.id})
-    useEffect(() => {
-        if (!isLoading && chain?.id != selectedChain?.id && chain?.id && selectedChain?.id) {
-            switchNetwork && switchNetwork(selectedChain?.id);
-        }
-    }, [chain?.id, isLoading, selectedChain?.id, switchNetwork])
+    const {switchNetwork, isLoading} = useSwitchNetwork()
     return <ChainSelector
         className="text-white"
         onChainSelected={(chain) => {
-            setSelectedChain(chain)
+            switchNetwork && switchNetwork(chain.id)
         }}
         selectedChainId={chain?.id}
     />
