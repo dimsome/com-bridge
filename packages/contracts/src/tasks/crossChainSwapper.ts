@@ -10,7 +10,7 @@ import { logger } from "../utils/logger";
 import { getSigner } from "../utils/signer";
 import { deployContract, logTxDetails } from "../utils/transaction";
 import { Chain, getChain } from "../utils/network";
-import { agMeow, fMeow, mMeow, sMeow } from "../utils/tokens";
+import { agMeow, bgMeow, fMeow, sMeow } from "../utils/tokens";
 import { resolveName } from "../utils/namedAddress";
 import { resolveAssetToken } from "../utils/resolvers";
 import { parse } from "path";
@@ -38,9 +38,7 @@ subtask("ccs-deposit", "Deposits Meow in the Cross Chain Swapper contract")
     log(
       `About to deposit ${taskArgs.amount} ${token.symbol} into CrossChainSwapper with address ${swapperAddress}`
     );
-    const tx = await swapper.deposit(token.address, amountBN, {
-      gasLimit: 1000000,
-    });
+    const tx = await swapper.deposit(token.address, amountBN);
     await logTxDetails(
       tx,
       `deposit ${taskArgs.amount} ${token.symbol} into CrossChainSwapper with address ${swapperAddress}`
@@ -70,9 +68,9 @@ subtask("ccs-make-swap", "Maker creates a swap")
 
     log(`About to create swap for ${taskArgs.amount} Meow`);
     const tx = await swapper.makeSwap(
-      sMeow.address,
-      fMeow.address,
-      Chain.fuji,
+      chain === Chain.sepolia ? sMeow.address : bgMeow.address,
+      chain === Chain.sepolia ? fMeow.address : agMeow.address,
+      chain === Chain.sepolia ? Chain.fuji : Chain.arbitrumGoerli,
       rate,
       amountBN
     );
@@ -107,12 +105,11 @@ subtask("ccs-take-swap", "Taker matches a swap")
       `About to take swap for ${taskArgs.amount} Meow against Swapper ${swapperAddress}`
     );
     const tx = await swapper.takeSwap(
-      fMeow.address,
-      sMeow.address,
-      Chain.sepolia,
+      chain === Chain.fuji ? fMeow.address : agMeow.address,
+      chain === Chain.fuji ? sMeow.address : bgMeow.address,
+      chain === Chain.fuji ? Chain.sepolia : Chain.BaseGoerli,
       rate,
-      amountBN,
-      { gasLimit: 1000000 }
+      amountBN
     );
     await logTxDetails(
       tx,
@@ -200,12 +197,12 @@ subtask("ccs-deploy", "Deploys a new Cross Chain Swapper contract").setAction(
           rate: parseEther("1"),
         },
       ];
-    } else if (chain === Chain.mumbai) {
+    } else if (chain === Chain.BaseGoerli) {
       liquidityPools = [
         {
-          sourceToken: mMeow.address,
+          sourceToken: bgMeow.address,
           destinationToken: agMeow.address,
-          destinationChainId: Chain.mumbai,
+          destinationChainId: Chain.arbitrumGoerli,
           rate: parseEther("1"),
         },
       ];
@@ -213,8 +210,8 @@ subtask("ccs-deploy", "Deploys a new Cross Chain Swapper contract").setAction(
       liquidityPools = [
         {
           sourceToken: agMeow.address,
-          destinationToken: mMeow.address,
-          destinationChainId: Chain.arbitrumGoerli,
+          destinationToken: bgMeow.address,
+          destinationChainId: Chain.BaseGoerli,
           rate: parseEther("1"),
         },
       ];

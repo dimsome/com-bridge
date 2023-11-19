@@ -55,7 +55,7 @@ export const resolveName = (
   } else if (chain === Chain.arbitrumGoerli) {
     switch (contractName) {
       case "CrossChainSwapper":
-        return "0x4a3C098D5D1422574015A55d7ad9Cf904226a2e6";
+        return "0x710567b664632b643555947c55498c2fceB4110B";
       case "CCIP_Router":
         return "0x88E492127709447A5ABEFdaB8788a15B4567589E";
       case "CCIP_ChainSelector":
@@ -64,10 +64,22 @@ export const resolveName = (
         return "0xd14838A68E8AFBAdE5efb411d5871ea0011AFd28";
       default:
     }
+  } else if (chain === Chain.BaseGoerli) {
+    switch (contractName) {
+      case "CrossChainSwapper":
+        return "0xa3C235f09F1491fbc714efDAA7504089E49Df1b2";
+      case "CCIP_Router":
+        return "0xa8c0c11bf64af62cdca6f93d3769b88bdd7cb93d";
+      case "CCIP_ChainSelector":
+        return "5790810961207155433";
+      case "SelectorLib":
+        return "0x18E0C317c9d683a6f12dbA3e84F229F1F73293e6";
+      default:
+    }
   } else if (chain === Chain.mumbai) {
     switch (contractName) {
       case "CrossChainSwapper":
-        return "0xFfC3b028e159C1d3A5a9d158f3bc60ABE76F92cB";
+        return "0x49Bc3d55c3774aBb1210cA72bFCd6dCcA466f31f";
       case "CCIP_Router":
         return "0x70499c328e1e2a3c41108bd3730f6670a44595d1";
       case "CCIP_ChainSelector":
@@ -97,7 +109,7 @@ export const resolveName = (
       case "CCIP_ChainSelector":
         return "14767482510784806043";
       case "SelectorLib":
-        return "0x6725B13eD908FB146778b7CD956c385d3d88F587";
+        return "0x2237e5dee801a432965210933c1F26696565303d";
       default:
     }
   }

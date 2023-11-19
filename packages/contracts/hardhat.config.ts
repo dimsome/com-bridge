@@ -63,6 +63,15 @@ const config: HardhatUserConfig = {
     arbitrumGoerli: {
       url: process.env.NODE_URL ?? "",
     },
+    base: {
+      url: process.env.NODE_URL ?? "",
+    },
+    baseGoerli: {
+      url: process.env.NODE_URL ?? "",
+    },
+    testnet: {
+      url: process.env.NODE_URL ?? "",
+    },
   },
   abiExporter: {
     path: "./dist/abis",

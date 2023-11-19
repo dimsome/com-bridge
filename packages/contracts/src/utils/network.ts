@@ -10,7 +10,8 @@ export enum Chain {
   arbitrumGoerli = 421613,
   optimism = 10,
   optimismGoerli = 420,
-  Base = 84531,
+  Base = 8453,
+  BaseGoerli = 84531,
   bsc = 56,
   bscTestnet = 97,
   avalanche = 43114,
@@ -19,7 +20,7 @@ export enum Chain {
   gnosis = 100,
   hardhat = 31337,
   celo = 42220,
-  scroll = 534351,
+  scroll = 534351, // Scroll Sepolia Testnet
 }
 
 export const getChain = (hre: HardhatRuntimeEnvironment): Chain => {
@@ -64,6 +65,12 @@ export const getChain = (hre: HardhatRuntimeEnvironment): Chain => {
   }
   if (hre?.network.name === "scroll") {
     return Chain.scroll;
+  }
+  if (hre?.network.name === "base") {
+    return Chain.Base;
+  }
+  if (hre?.network.name === "baseGoerli") {
+    return Chain.BaseGoerli;
   }
   return Chain.mainnet;
 };

@@ -71,7 +71,7 @@ contract CrossChainSwapper is CCIPReceiver {
     // Pool key (Source Token, Destination Token, Destination Chain Id, rate)
     //   => LiquidityPool(balance, makerSwapQueue, queueData, poolData)
     mapping(bytes32 => LiquidityPool) public liquidityPools;
-    bytes32[] pools;
+    bytes32[] public pools;
 
     // Chain identifier => DestinationData(ccipChainSelector,swapper)
     mapping(uint256 => DestinationData) public destinations;
@@ -111,6 +111,13 @@ contract CrossChainSwapper is CCIPReceiver {
     );
     event ReceiverCCIPMessage(bytes4 selector, bytes payload);
     event SendingCCIPMessage(bytes payload);
+    event PoolAdded(
+        bytes32 indexed poolKey,
+        address indexed sourceToken,
+        address indexed destinationToken,
+        uint64 destinationChainId,
+        uint128 rate
+    );
 
     /***************************************
                 Deposit/Withdraw
@@ -470,6 +477,14 @@ contract CrossChainSwapper is CCIPReceiver {
         liquidityPools[poolKey].poolData = _pool;
 
         pools.push(poolKey);
+
+        emit PoolAdded(
+            poolKey,
+            _pool.sourceToken,
+            _pool.destinationToken,
+            _pool.destinationChainId,
+            _pool.rate
+        );
     }
 
     // TODO protect by admin role
