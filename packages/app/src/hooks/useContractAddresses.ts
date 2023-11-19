@@ -10,7 +10,7 @@ export default function useContractAddresses() {
     }, [chain]);
 }
 
-function getAddressesByChainId(chainId: number) {
+export function getAddressesByChainId(chainId: number) {
     const id = chainId + '';
     if (addresses.hasOwnProperty(id)) {
         // @ts-ignore

@@ -41,8 +41,7 @@ TODO: Add all the lanes we support
 Support is limited to the chains that support the Chainlink CCIP protocol. Currently, the following lanes are supported:
 
 - Sepolia (Ethereum Testnet) <-> Avalanche Fuji (Avalanche Testnet)
-- Polygon Mumbai (Polygon Testnet) <-> Avalanche Fuji (Avalanche Testnet)
--
+- Base Goerli Testnet <-> Arbitrum Goerli Testnet
 
 ## Protocols used
 
@@ -52,54 +51,70 @@ The Chainlink Cross-Chain Interoperability Protocol (CCIP) is a standard for cro
 
 It is core to our protocol and relies on the security of the Chainlink network.
 
-### Arbitrum Testnet
+### Arbitrum
 
-The contracts are deployed on the Arbitrum Testnet with the following addresses:
+The contracts are deployed on the **Arbitrum Goerli** Testnet with the following addresses:
 
 - Meow Token:
 - CrossChainSwapper:
 
 Meow tokens can be bridge from Arbitrum testnet to
 
-### Linea testnet
+### Polygon
 
-The contracts are deployed on the Linea testnet with the following addresses:
+The contracts are deployed on the **Polygon Mumbai** Testnet with the following addresses:
+
+- Meow Token:
+- CrossChainSwapper:
+
+Meow tokens can be bridge from Arbitrum testnet to
+
+Additionally, contracts are deployed on **Polygon zkEVM Testnet** with the following addresses:
 
 - Meow Token:
 - CrossChainSwapper:
 
 (Bridging not possible at the moment, only base contracts deployed because of missing crosschain messaging protocol)
 
-### Scroll Sepolia
+### Linea
 
-The contracts are deployed on the Scroll testnet with the following addresses:
-
-- Meow Token:
-- CrossChainSwapper:
-
-(Bridging not possible at the moment, only base contracts deployed because of missing crosschain messaging protocol)
-
-### Mantle testnet
-
-The contracts are deployed on the Mantle testnet with the following addresses:
+The contracts are deployed on the **Linea Testnet** with the following addresses:
 
 - Meow Token:
 - CrossChainSwapper:
 
 (Bridging not possible at the moment, only base contracts deployed because of missing crosschain messaging protocol)
 
-### Celo testnet
+### Scroll
 
-The contracts are deployed on the Celo testnet with the following addresses:
+The contracts are deployed on the **Scroll Sepolia Testnet** with the following addresses:
 
 - Meow Token:
 - CrossChainSwapper:
 
 (Bridging not possible at the moment, only base contracts deployed because of missing crosschain messaging protocol)
 
-### Base testnet
+### Mantle
 
-The contracts are deployed on the Base testnet with the following addresses:
+The contracts are deployed on the **Mantle Testnet** with the following addresses:
+
+- Meow Token:
+- CrossChainSwapper:
+
+(Bridging not possible at the moment, only base contracts deployed because of missing crosschain messaging protocol)
+
+### Celo
+
+The contracts are deployed on the **Celo Alfajores Testnet** with the following addresses:
+
+- Meow Token:
+- CrossChainSwapper:
+
+(Bridging not possible at the moment, only base contracts deployed because of missing crosschain messaging protocol)
+
+### Base
+
+The contracts are deployed on the **Base Testnet** with the following addresses:
 
 - Meow Token:
 - CrossChainSwapper:

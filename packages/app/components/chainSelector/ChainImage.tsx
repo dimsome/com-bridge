@@ -14,6 +14,12 @@ export const ChainImage = ({chainId, className, size = 24}: ChainImageProps) => 
     const chain = useMemo(() => chains.find(value => value.id == chainId), [chains, chainId])
     const src = useMemo(() => {
         switch (chainId) {
+            case 80001:
+                return '/rsz_polygon.webp';
+            case 43113:
+                return '/rsz_avalanche.webp';
+            case 421611:
+                return '/arbitrum.png';
             case 42161:
                 return '/arbitrum.png';
             case 100:
@@ -28,6 +34,6 @@ export const ChainImage = ({chainId, className, size = 24}: ChainImageProps) => 
         </div>
     }
 
-    return <Image className={clsxm('shrink-0 grow-0', className)} src={src} alt={'chain'} height={size ?? 24}
+    return <Image className={clsxm('shrink-0 grow-0 rounded-full', className)} src={src} alt={'chain'} height={size ?? 24}
                   width={size ?? 24}/>
 }
