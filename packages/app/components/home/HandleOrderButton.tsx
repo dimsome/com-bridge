@@ -3,8 +3,8 @@ import {useMatchingOrderValue} from "@/src/hooks/useMatchingOrderValue";
 import {useMakeSwap} from "@/src/hooks/useMakeSwap";
 import Button from "@/components/button/Button";
 import {useTakeSwap} from "@/src/hooks/useTakeSwap";
-import React, {useEffect} from "react";
-import {toast} from "react-toastify";
+import React, {MutableRefObject, useEffect, useRef} from "react";
+import {Id, toast} from "react-toastify";
 import {Address, Chain, useAccount, useNetwork} from "wagmi";
 import useSound from "use-sound";
 import {emitOrderDone} from "@/components/events/events";
@@ -56,17 +56,30 @@ const CreateOrderButton = ({destinationChain, token, amount, destinationToken}: 
     })
     const link = useTxExplorer(hash)
     const {chain} = useNetwork()
-
+    const toastId = useRef<Id | null>(null);
+    useEffect(() => {
+        if (hash && toastId.current == null) {
+            toastId.current = toast(<div>
+                <div>Order is being queued</div>
+                <ExternalLink href={link}>View transaction</ExternalLink>
+            </div>, {autoClose: false, isLoading: true})
+        }
+    }, [hash, link, toastId]);
 
     const [play] = useSound('/placeOrder.mp3')
     useEffect(() => {
         if (isSuccess) {
             play()
             emitOrderDone()
-            toast.success(<div>
-                <div>Order has been created</div>
-                <ExternalLink href={link}>View transaction</ExternalLink>
-            </div>, {autoClose: 5000})
+            toast.update(toastId.current!, {
+                render: () => <div>
+                    <div>Order has been queued</div>
+                    <ExternalLink href={link}>View transaction</ExternalLink>
+                </div>,
+                type: 'success',
+                autoClose: 2000,
+                isLoading: false
+            })
         }
     }, [isSuccess, link, play]);
 
@@ -99,15 +112,31 @@ const TakeOrderButton = ({destinationChain, token, amount, disable, destinationT
 
     const link = useTxExplorer(hash)
 
+    const toastId = useRef<Id | null>(null);
+    useEffect(() => {
+        if (hash && toastId.current == null) {
+            toastId.current = toast(<div>
+                <div>Order is being executed</div>
+                <ExternalLink href={link}>View transaction</ExternalLink>
+            </div>, {autoClose: false, isLoading: true})
+        }
+    }, [hash, link, toastId]);
+
     const [play] = useSound('/placeOrder.mp3')
     useEffect(() => {
         if (isSuccess) {
             play()
             emitOrderDone()
-            toast.success(<div>
-                <div>Order has been executed</div>
-                <ExternalLink href={link}>View transaction</ExternalLink>
-            </div>, {autoClose: 5000})
+            toast.update(toastId.current!, {
+                render: () => <div>
+                    <div>Order has been executed</div>
+                    <ExternalLink href={link}>View transaction</ExternalLink>
+                </div>,
+                type: 'success',
+                autoClose: 2000,
+                isLoading: false
+
+            })
         }
     }, [isSuccess, link, play]);
 
