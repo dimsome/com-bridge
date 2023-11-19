@@ -4,14 +4,22 @@ import { ReactNode } from "react";
 import { WagmiConfig, configureChains, createConfig } from "wagmi";
 import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 // tesnets
-import { hardhat, scrollSepolia, polygonZkEvmTestnet, mantleTestnet, sepolia, avalancheFuji } from "wagmi/chains";
+import {
+    hardhat,
+    scrollSepolia,
+    polygonZkEvmTestnet,
+    mantleTestnet,
+    sepolia,
+    avalancheFuji,
+    baseGoerli
+} from "wagmi/chains";
 // mainnets
 import { polygonZkEvm, mantle } from "wagmi/chains";
 
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
 
-const testnets = [sepolia, avalancheFuji, scrollSepolia, polygonZkEvmTestnet, mantleTestnet]
+const testnets = [sepolia, avalancheFuji, scrollSepolia, polygonZkEvmTestnet, mantleTestnet, baseGoerli, ]
 const mainnets = [polygonZkEvm, mantle] //scroll not yet live
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(

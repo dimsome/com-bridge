@@ -45,7 +45,7 @@ export const CreateOrderForm = () => {
 
 
     return <Card>
-        <div className="flex justify-between">
+        <div className="flex justify-between w-[80vw]">
             <span>Bridge token</span>
             {/*<div className="flex gap-4">*/}
             {/*    <ToggleButton selected={true} onClick={() => {*/}
@@ -100,14 +100,10 @@ export const CreateOrderForm = () => {
                 />
             </div>
             <div className="border-b border-neutral-600"></div>
-            <TokenInput estimatedAmount={true} value={amount} token={selectedToken}/>
+            <TokenInput value={amount} token={selectedToken}/>
         </div>
         <Separator/>
 
-        <InfoItem className='my-4' title={'Creating a Make Order'}>
-            You can create a Make Order to submit your intent to bridge to the destination chain. This will be then
-            executed as soon as the other side is supplied
-        </InfoItem>
 
 
         <ActionButton

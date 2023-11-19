@@ -13,6 +13,7 @@ import {ExternalLink} from "@/components/links/ExternalLink";
 import {ethers, formatUnits} from "ethers";
 import {getPublicClient} from "@wagmi/core";
 import {formatEther} from "viem";
+import {InfoItem} from "@/components/content/InfoItem";
 
 type HandleOrderButtonProps = {
     destinationChain: Chain,
@@ -39,8 +40,8 @@ export const HandleOrderButton = ({destinationChain, token, amount}: HandleOrder
 
 
     return <>
-        <CreateOrderButton {...config}/>
-        <TakeOrderButton disable={isLoading || data < amount!} {...config}/>
+        {(isLoading || data < amount!) &&<CreateOrderButton {...config}/>}
+        {!(isLoading || data < amount!) && <TakeOrderButton disable={isLoading || data < amount!} {...config}/>}
     </>
 
 
@@ -70,12 +71,17 @@ const CreateOrderButton = ({destinationChain, token, amount, destinationToken}: 
     }, [isSuccess, link, play]);
 
     return <>
+        <InfoItem className='my-4' title={'Add your order to the Queue'}>
+            You can create a Queue Order to submit your intent to bridge to the destination chain. This will be then
+            executed as soon as the other side is supplied.
+        </InfoItem>
+
         <div className='flex justify-between mt-4 text-sm'>
             <span className='text-primary-50'>Gas Fees</span>
             <span>{gas && formatUnits(gas, chain?.nativeCurrency?.decimals ?? 18) || '-'} {chain?.nativeCurrency?.symbol}</span>
         </div>
         <Button variant="CTA" isLoading={isLoading} className="w-full mt-2" onClick={() => write && write()}>
-            Create Order
+            Queue Order
         </Button>
     </>
 
@@ -108,12 +114,18 @@ const TakeOrderButton = ({destinationChain, token, amount, disable, destinationT
 
 
     return <>
+        <InfoItem className='my-4  bg-[#26A18BFF] text-purple-500 font-bold' title={'Matching Order Found'} >
+            <div className="text-purple-500 font-normal">
+                Your intent to bridge can be matched by a corresponding Make Order. You can execute this order directly!
+            </div>
+        </InfoItem>
+
         <div className='flex justify-between mt-4  text-sm'>
             <span className='text-primary-50'>Gas Fees</span>
             <span>{gas && formatUnits(gas, chain?.nativeCurrency?.decimals ?? 18) || '-'} {chain?.nativeCurrency?.symbol}</span>
         </div>
         <Button variant="CTA" disabled={disable} isLoading={isLoading} className="w-full mt-2" onClick={() => write && write()}>
-        Take Order
+        Execute Order
     </Button>
     </>
 }

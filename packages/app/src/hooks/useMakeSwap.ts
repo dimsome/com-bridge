@@ -26,26 +26,26 @@ export const useMakeSwap = ({destinationChainId, token, destinationToken, amount
     });
     const estimatedGas = useEstimateGas(config.request)
 
-    const {data, write} = useContractWrite(config);
+    const {data, write, isLoading: isWriteLoading} = useContractWrite(config);
     const {isLoading, isSuccess, isError} = useWaitForTransaction({hash: data?.hash, enabled: !!data?.hash});
     return {
-        isLoading, isSuccess, isError, write, hash: data?.hash, gas: estimatedGas
+        isLoading: isLoading || isWriteLoading, isSuccess, isError, write, hash: data?.hash, gas: estimatedGas
     }
 }
 
 
 export const useEstimateGas = (requestConfig: any) => {
     const [estimatedGas, setEstimatedGas] = useState<bigint>()
-    const pc= useMemo(() => getPublicClient(), [])
+    const pc = useMemo(() => getPublicClient(), [])
 
-    useEffect(()=> {
+    useEffect(() => {
         if (!requestConfig || !requestConfig.abi) return;
         pc.estimateContractGas(requestConfig).then((gas) => {
             pc.getGasPrice().then((price) => {
-                setEstimatedGas(gas*price);
+                setEstimatedGas(gas * price);
             });
         })
-    },[pc, requestConfig])
+    }, [pc, requestConfig])
 
     return estimatedGas;
 }
