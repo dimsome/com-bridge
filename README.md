@@ -67,7 +67,7 @@ The contracts are deployed on the **Polygon Mumbai** Testnet with the following 
 - Meow Token: [0x75281fFc939bc0D013964954959793f760342B11](https://mumbai.polygonscan.com/address/0x75281fFc939bc0D013964954959793f760342B11)
 - CrossChainSwapper: [0x49Bc3d55c3774aBb1210cA72bFCd6dCcA466f31f](https://mumbai.polygonscan.com/address/0x49Bc3d55c3774aBb1210cA72bFCd6dCcA466f31f)
 
-Meow tokens can be bridge from Arbitrum testnet to
+Meow tokens can be bridged from Arbitrum testnet to
 
 Additionally, contracts are deployed on **Polygon zkEVM Testnet** with the following addresses:
 
@@ -81,7 +81,7 @@ Additionally, contracts are deployed on **Polygon zkEVM Testnet** with the follo
 The contracts are deployed on the **Linea Testnet** with the following addresses:
 
 - Meow Token:
-- CrossChainSwapper: rpc error with payload
+- CrossChainSwapper: Failed with `invalid opcode: PUSH0` in tx [0xcd6318123cb25574b15c81f4c193d4dab104354a454422bf0fe185a687769150](https://goerli.lineascan.build/tx/0xcd6318123cb25574b15c81f4c193d4dab104354a454422bf0fe185a687769150)
 
 (Bridging not possible at the moment, only base contracts deployed because of missing crosschain messaging protocol)
 
@@ -90,7 +90,7 @@ The contracts are deployed on the **Linea Testnet** with the following addresses
 The contracts are deployed on the **Scroll Sepolia Testnet** with the following addresses:
 
 - Meow Token: [0x75281fFc939bc0D013964954959793f760342B11](https://sepolia.scrollscan.dev/address/0x75281fFc939bc0D013964954959793f760342B11)
-- CrossChainSwapper:[0x8e2587265c68cd9ee3ecbf22dc229980b47cb960](https://sepolia.scrollscan.dev/address/0x8e2587265c68cd9ee3ecbf22dc229980b47cb960#code)
+- CrossChainSwapper: [0x8e2587265c68cd9ee3ecbf22dc229980b47cb960](https://sepolia.scrollscan.dev/address/0x8e2587265c68cd9ee3ecbf22dc229980b47cb960#code)
 
 (Bridging not possible at the moment, only base contracts deployed because of missing crosschain messaging protocol)
 
@@ -108,7 +108,7 @@ The contracts are deployed on the **Mantle Testnet** with the following addresse
 The contracts are deployed on the **Celo Alfajores Testnet** with the following addresses:
 
 - Meow Token: [0x75281fFc939bc0D013964954959793f760342B11](https://alfajores.celoscan.io/address/0x75281fFc939bc0D013964954959793f760342B11)
-- CrossChainSwapper: []()
+- CrossChainSwapper: failed with `invalid opcode: opcode 0x5f not defined` in tx [0x9ca05acf67de7f4adaf0caf079489bb182899cbcd5fed883adfa70801347a464](https://alfajores.celoscan.io/tx/0x9ca05acf67de7f4adaf0caf079489bb182899cbcd5fed883adfa70801347a464)
 
 (Bridging not possible at the moment, only base contracts deployed because of missing crosschain messaging protocol)
 
@@ -116,10 +116,12 @@ The contracts are deployed on the **Celo Alfajores Testnet** with the following 
 
 The contracts are deployed on the **Base Testnet** with the following addresses:
 
-- Meow Token:
-- CrossChainSwapper: 
+- Meow Token: [0x466D9AbFf7c91f170b4906Ddb4A75f50B4a16faD](https://goerli.basescan.org/address/0x466d9abff7c91f170b4906ddb4a75f50b4a16fad)
+- CrossChainSwapper: [0x8e2587265c68cd9ee3ecbf22dc229980b47cb960](https://goerli.basescan.org/address/0x8e2587265c68cd9ee3ecbf22dc229980b47cb960)
 
 (Bridging not possible at the moment, only base contracts deployed because of missing crosschain messaging protocol)
+
+CCIP is supported on Base Goerli but there is no faucet to get Link tokens to pay for the messages.
 
 ### Full list of deployed contracts
 
