@@ -105,7 +105,7 @@ The contracts are deployed on the **Mantle Testnet** with the following addresse
 
 ### Celo
 
-The contracts are deployed on the **Celo Testnet** with the following addresses:
+The contracts are deployed on the **Celo Alfajores Testnet** with the following addresses:
 
 - Meow Token:
 - CrossChainSwapper:
