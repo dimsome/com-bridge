@@ -186,15 +186,19 @@ yarn task ccs-take-swap --amount 7 --token meow --network fuji
 
 ## Proof of CCIP messages
 
-https://ccip.chain.link/tx/0x338088aee89d9c20ebae138062b33f0b61f344b992e5753e9f89e7fec9dd9124
+CCIP Explorer: https://ccip.chain.link/tx/0x338088aee89d9c20ebae138062b33f0b61f344b992e5753e9f89e7fec9dd9124
 
-Avalanche Fuji side sending a CCIP message with the taker swap.
+Avalanche Fuji side sending a CCIP message with the taker swap in tx [0x15e6f44c0b666c189a2e1e5ffd59a86629188d7bbbbb25683b0cd89e28c6a4dd](https://testnet.snowtrace.io/tx/0x15e6f44c0b666c189a2e1e5ffd59a86629188d7bbbbb25683b0cd89e28c6a4dd).
 
-![Fuji send](./docs/c3d7cd36.svg)
+![Fuji send](./docs/15e6a4dd.svg)
 
-Sepolia side receiving CCIP message and sending the filled maker swaps back to Fuji
+Sepolia side receiving CCIP message and sending the filled maker swaps back to Fuji in tx [0x338088aee89d9c20ebae138062b33f0b61f344b992e5753e9f89e7fec9dd9124](https://sepolia.etherscan.io/tx/0x338088aee89d9c20ebae138062b33f0b61f344b992e5753e9f89e7fec9dd9124)
 
-![Sepolia receive and send](./docs/bd028a22.svg)
+![Sepolia receive and send](./docs/33809124.svg)
+
+Fuji side receiving the response in tx [0xec34499f39f389084c1e2f5b6548ed9aca025f0ed3bda8e3c230fa29a1197eec](https://testnet.snowtrace.io/tx/0xec34499f39f389084c1e2f5b6548ed9aca025f0ed3bda8e3c230fa29a1197eec)
+
+![Fuji receive](./docs/ec347eec.svg)
 
 ## Base Goerli to Arbitrum Goerli
 
