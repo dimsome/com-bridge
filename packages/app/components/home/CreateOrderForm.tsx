@@ -8,22 +8,55 @@ import {InfoItem} from "@/components/content/InfoItem";
 import Button from "@/components/button/Button";
 import {toast} from "react-toastify";
 import {Card} from "@/components/Card";
-import React from "react";
+import React, {useCallback, useEffect, useState} from "react";
+import {
+    Address,
+    Chain,
+    erc20ABI, useAccount,
+    useContractRead,
+    useContractWrite,
+    useNetwork,
+    usePrepareContractWrite,
+    useSwitchNetwork, useWaitForTransaction
+} from "wagmi";
+import useContractAddresses from "@/src/hooks/useContractAddresses";
+import {HandleOrderButton} from "@/components/home/HandleOrderButton";
+import {useOrderDoneListener} from "@/components/events/events";
 
 export const CreateOrderForm = () => {
+    const {chain} = useNetwork();
+
+
+    const [destinationChain, setDestinationChain] = useState<Chain>()
+    const [selectedToken, setSelectedToken] = useState<Address>()
+    const [amount, setAmount] = useState<bigint>()
+    const resetData = useCallback(() => {
+        setDestinationChain(undefined);
+        setSelectedToken(undefined);
+        setAmount(undefined);
+    },[])
+
+    useOrderDoneListener(() => {
+      resetData();
+    })
+    useEffect(() => {
+      resetData();
+    }, [chain?.id, resetData]);
+
+
     return <Card>
-        <div className="flex justify-between">
+        <div className="flex justify-between w-[80vw]">
             <span>Bridge token</span>
-            <div className="flex gap-4">
-                <ToggleButton selected={true} onClick={() => {
-                }}>
-                    Make
-                </ToggleButton>
-                <ToggleButton selected={false} onClick={() => {
-                }}>
-                    Take
-                </ToggleButton>
-            </div>
+            {/*<div className="flex gap-4">*/}
+            {/*    <ToggleButton selected={true} onClick={() => {*/}
+            {/*    }}>*/}
+            {/*        Make*/}
+            {/*    </ToggleButton>*/}
+            {/*    <ToggleButton selected={false} onClick={() => {*/}
+            {/*    }}>*/}
+            {/*        Take*/}
+            {/*    </ToggleButton>*/}
+            {/*</div>*/}
         </div>
         <Separator/>
         <div
@@ -33,19 +66,14 @@ export const CreateOrderForm = () => {
         >
             <div className="text-sm text-gray-400">
                 From:{" "}
-                <ChainSelector
-                    className="text-white"
-                    onChainSelected={(chain) => {
-                    }}
-                    selectedChainId={undefined}
-                />
+                <FromChainSelector/>
             </div>
             <div className="border-b border-neutral-600"></div>
             <TokenInput
-                onTokenSelected={(token) => {
-                }}
-                onValueChanged={(value) => {
-                }}
+                value={amount}
+                onTokenSelected={setSelectedToken}
+                token={selectedToken}
+                onValueChanged={setAmount}
             />
         </div>
 
@@ -64,28 +92,108 @@ export const CreateOrderForm = () => {
                 To:{" "}
                 <ChainSelector
                     className="text-white"
+                    allowOwn={false}
                     onChainSelected={(chain) => {
+                        setDestinationChain(chain);
                     }}
-                    selectedChainId={undefined}
+                    selectedChainId={destinationChain?.id}
                 />
             </div>
             <div className="border-b border-neutral-600"></div>
-            <TokenInput estimatedAmount={true}/>
+            <TokenInput value={amount} token={selectedToken}/>
         </div>
-        <Separator />
-
-        <InfoItem className='my-4' title={'Creating a Make Order'} >
-            You can create a Make Order to submit your intent to bridge to the destination chain. This will be then executed as soon as the other side is supplied
-        </InfoItem>
-
-        <div className='flex justify-between my-2'>
-            <span className='text-primary-50'>Gas Fees</span>
-            <span>0.0003765888 ETH</span>
-        </div>
+        <Separator/>
 
 
-        <Button variant="CTA" className="w-full mt-4" onClick={() => toast.info('test', {autoClose: 3000})}>
-            Create Order
-        </Button>
+
+        <ActionButton
+            destinationChain={destinationChain}
+            token={selectedToken}
+            take={false}
+            amount={amount}/>
+
     </Card>
+}
+
+type ActionProps = {
+    destinationChain?: Chain,
+    token?: Address,
+    amount?: bigint,
+}
+const ActionButton = ({destinationChain, token, amount}: ActionProps & { take: boolean }) => {
+    const {address} = useAccount()
+    const addresses = useContractAddresses();
+
+    const {data: dataAllowance, refetch} = useContractRead({
+        abi: erc20ABI,
+        functionName: 'allowance',
+        address: token,
+        args: [address!, addresses.Swapper],
+        staleTime: 5,
+        enabled: !!token
+    },)
+
+    useEffect(() => {
+        token && refetch()
+    }, [token, refetch]);
+
+    if (!amount || !token || !destinationChain?.id) {
+        return <Button variant="CTA" className="w-full mt-4" disabled={true}>
+            {
+                !token ? 'Select token' : !amount ? 'Enter amount' : 'Select destination chain'
+            }
+        </Button>
+    }
+    if ((dataAllowance ?? 0n) < (amount ?? 0)) {
+        return <ApproveButton token={token!} amount={amount!} onDone={() => refetch()}/>
+    }
+
+
+    return <HandleOrderButton
+    token={token}
+    amount={amount}
+    destinationChain={destinationChain}/>
+}
+
+
+const ApproveButton = ({token, amount, onDone}: { token: Address, amount: bigint, onDone: ()=>void }) => {
+    const addresses = useContractAddresses();
+    const {config} = usePrepareContractWrite({
+        abi: erc20ABI,
+        functionName: 'approve',
+        address: token,
+        args: [addresses.Swapper, amount ?? 0n],
+        enabled: !!token && !!amount,
+    })
+    const {data, write, isLoading: isWriteLoading} = useContractWrite(config!);
+
+    const {isLoading, isSuccess} = useWaitForTransaction({hash: data?.hash, enabled: !!data?.hash});
+    useEffect(() => {
+        if (!isLoading && isSuccess) {
+            onDone()
+        }
+    }, [isLoading, isSuccess, onDone]);
+    return <Button
+        isLoading={isLoading || isWriteLoading}
+        variant="CTA" className="w-full mt-4" onClick={() => write && write()}>
+        Approve token
+    </Button>
+}
+
+const FromChainSelector = () => {
+    const {chain} = useNetwork();
+    const [selectedChain, setSelectedChain] = useState(chain)
+    const {switchNetwork, isLoading} = useSwitchNetwork({chainId: selectedChain?.id})
+    useEffect(() => {
+        if (!isLoading && chain?.id != selectedChain?.id && chain?.id && selectedChain?.id) {
+            switchNetwork && switchNetwork(selectedChain?.id);
+        }
+    }, [chain?.id, isLoading, selectedChain?.id, switchNetwork])
+    return <ChainSelector
+        className="text-white"
+        onChainSelected={(chain) => {
+            setSelectedChain(chain)
+        }}
+        selectedChainId={chain?.id}
+    />
 }

@@ -1,4 +1,4 @@
-import {useEffect, useMemo, useState} from "react";
+import {useEffect, useMemo, useRef, useState} from "react";
 import {BsSearch, BsX} from "react-icons/bs";
 import {Address, useAccount, useBalance, useToken} from "wagmi";
 import Modal from "@/components/dialog/Modal";
@@ -43,6 +43,14 @@ export default function TokenInput({
         return value && value > 0 && value <= (balance?.value ?? BigInt(0));
     }, [value, balance?.value, onValueChanged]);
 
+    const inputRef = useRef<HTMLInputElement>(null)
+
+    useEffect(() => {
+        if (!!inputRef.current?.value && value === undefined) {
+            inputRef.current!.value = '';
+        }
+    }, [value]);
+
     const displayValue = useMemo(
         () =>
             onValueChanged == undefined
@@ -66,6 +74,7 @@ export default function TokenInput({
             />
             <div className="relative w-full">
                 <input
+                    ref={inputRef}
                     placeholder="amount"
                     disabled={!token || !onValueChanged}
                     value={displayValue}

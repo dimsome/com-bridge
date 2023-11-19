@@ -1,16 +1,24 @@
-import React from "react";
+import React, {useMemo} from "react";
 import {Card} from "@/components/Card";
 import {ToggleButton} from "@/components/button/ToggleButton";
 import {Separator} from "@/components/misc/Separator";
 import Image from "next/image";
 import {ChainImage} from "@/components/chainSelector/ChainImage";
 import ChainArrow from "~/chain_arrow.svg";
+import {MakerSwapData, useMakerSwaps} from "@/src/hooks/useMakerSwaps";
+import {useNetwork, useToken} from "wagmi";
+import {formatUnits} from "ethers";
+import {useOrderDoneListener} from "@/components/events/events";
 
 type OrderListProps = {
     className?: string;
 }
 export const OrderList = ({className}: OrderListProps) => {
-    return <Card>
+    const {data, isLoading, refetch} = useMakerSwaps();
+    useOrderDoneListener(() => {
+        refetch()
+    })
+    return <Card className="mb-20">
         <div className="flex justify-between">
             <span>Your orders</span>
             <div className="flex gap-4">
@@ -25,9 +33,18 @@ export const OrderList = ({className}: OrderListProps) => {
             </div>
         </div>
         <Separator/>
-        <div className='min-h-[300px] '>
-            <List/>
-            <NoOrders/>
+        <div className='min-h-[300px]'>
+            {isLoading &&  <div className="animate-pulse"> <Image
+                src={"/ChillCat.png"}
+                height={168}
+                width={168}
+                className='mx-auto my-20'
+                alt={"Meditating cat"}
+            /> </div>}
+            {!isLoading && !!data?.length && <List data={data!}/>}
+            {!isLoading && !data?.length && <NoOrders/>}
+
+
         </div>
 
     </Card>
@@ -52,7 +69,7 @@ const NoOrders = () => {
         </div>
     </div>
 }
-const List = () => {
+const List = ({data} : {data: MakerSwapData[]}) => {
     return <table className="w-full table-auto">
         <thead>
         <tr className='text-left border-b text-xs font-thin'>
@@ -63,18 +80,25 @@ const List = () => {
         </tr>
         </thead>
         <tbody>
-        <OrderItem status={0}/>
-        <OrderItem status={1}/>
-        <OrderItem status={2}/>
-        <OrderItem status={0}/>
+        {
+            data.map((value, index) => <OrderItem key={index} item={value}/>)
+        }
+
+
         </tbody>
 
     </table>
 }
 type OrderProps = {
-    status: number
+    item: MakerSwapData
 }
-const OrderItem = ({status}: OrderProps) => {
+const OrderItem = ({item}: OrderProps) => {
+    const {chain} = useNetwork()
+    const {data: sourceTokenData} = useToken({address: item.sourceToken})
+    const {data: destTokenData} = useToken({address: item.destinationToken})
+    const sourceChain = chain?.id ?? 0;
+    const destChain = +item.destinationChainId?.toString();
+    const amount = useMemo(()=> formatUnits(item.amount,sourceTokenData?.decimals ?? 18), [item.amount, sourceTokenData?.decimals])
    return <tr className='text-sm'>
         <td>
             <div className='flex gap-1 items-center'>
@@ -84,23 +108,23 @@ const OrderItem = ({status}: OrderProps) => {
                     width={24}
                     alt={"Meditating cat"}
                 />
-                3244 DAI
+                {amount} {sourceTokenData?.symbol ?? '???'}
             </div>
         </td>
         <td>
-            <div className='flex items-center gap-1'><ChainImage chainId={42161}/> <ChainArrow
-                className='h-4'/> <ChainImage chainId={100}/></div>
+            <div className='flex items-center gap-1'><ChainImage chainId={sourceChain}/> <ChainArrow
+                className='h-4'/> <ChainImage chainId={destChain}/></div>
         </td>
         <td>
             <div className='text-xs'>
-                50%
+                0%
                 <div className='h-2 w-full bg-success-10 rounded-full'>
-                    <div className='bg-success-100 h-full  rounded-full' style={{width: '50%'}}>
+                    <div className='bg-success-100 h-full  rounded-full' style={{width: '2%'}}>
                     </div>
                 </div>
             </div>
         </td>
-        <td><OrderStatus status={status}/></td>
+        <td className='w-32'><OrderStatus status={0}/></td>
     </tr>
 }
 

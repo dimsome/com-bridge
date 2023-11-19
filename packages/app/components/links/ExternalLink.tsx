@@ -11,7 +11,7 @@ export function ExternalLink({className, href, children}: ExternalLinkProps) {
     return <a
         href={href}
         target={'_blank'}
-        className={clsxm('text-primary-50',className)}>
+        className={clsxm('text-primary-50 underline',className)}>
         {children} <ImNewTab className="inline"/>
     </a>
 }

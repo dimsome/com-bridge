@@ -24,7 +24,7 @@ export const ChainSelector = ({className, selectedChainId, onChainSelected, allo
                         aria-label='Open token selector'
                         className={clsxm('border px-2 rounded-lg border-transparent hover:border-primary-500 hover:bg-primary-300', className)}>
                         {selectedChain ?
-                            <div> {selectedChain.name}</div>
+                            <div> {selectedChain.name}<FaChevronDown className='inline ml-1 text-sm'/></div>
                             :
                             <div>Select chain<FaChevronDown className='inline ml-1 text-sm'/>
                             </div>
