@@ -20,7 +20,7 @@ export enum Chain {
   gnosis = 100,
   hardhat = 31337,
   celo = 42220,
-  scroll = 534351,
+  scroll = 534351, // Scroll Sepolia Testnet
 }
 
 export const getChain = (hre: HardhatRuntimeEnvironment): Chain => {

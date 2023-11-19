@@ -33,15 +33,15 @@ Token Swap
 
 ## TODO: Deployments
 
-| Network               | Requirements                              | Status |
-| --------------------- | ----------------------------------------- | ------ |
-| Arbitrum Goerli       | Deploy and verify contracts               | TODO   |
-| Polygon zkEVM Testnet | Deploy and verify contracts               | TODO   |
-| Linea testnet         | Deploy and verify contracts               | TODO   |
-| Celo testnet          | Deploy and verify contracts               | TODO   |
-| Mantle testnet        | Deploy and verify contracts               | TODO   |
-| Scroll testnet        | Deploy and verify contracts               | TODO   |
-| Gnosischain testnet   | Deploy and verify contracts, nice to have | TODO   |
+| Network               | Requirements                              | Status                                                                                                                          |
+| --------------------- | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| Arbitrum Goerli       | Deploy and verify contracts               | TODO                                                                                                                            |
+| Polygon zkEVM Testnet | Deploy and verify contracts               | TODO                                                                                                                            |
+| Linea testnet         | Deploy and verify contracts               | TODO                                                                                                                            |
+| Celo testnet          | Deploy and verify contracts               | [0x75281fFc939bc0D013964954959793f760342B11](https://alfajores.celoscan.io/address/0x75281fFc939bc0D013964954959793f760342B11)  |
+| Mantle testnet        | Deploy and verify contracts               | TODO                                                                                                                            |
+| Scroll testnet        | Deploy contracts                          | [0x75281fFc939bc0D013964954959793f760342B11](https://sepolia.scrollscan.dev/address/0x75281fFc939bc0D013964954959793f760342B11) |
+| Gnosischain testnet   | Deploy and verify contracts, nice to have | TODO                                                                                                                            |
 
 ## Current Deployments
 

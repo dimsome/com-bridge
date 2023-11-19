@@ -109,7 +109,7 @@ export const resolveName = (
       case "CCIP_ChainSelector":
         return "14767482510784806043";
       case "SelectorLib":
-        return "0x6725B13eD908FB146778b7CD956c385d3d88F587";
+        return "0x2237e5dee801a432965210933c1F26696565303d";
       default:
     }
   }

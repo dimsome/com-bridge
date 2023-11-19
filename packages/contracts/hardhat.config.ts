@@ -69,6 +69,9 @@ const config: HardhatUserConfig = {
     baseGoerli: {
       url: process.env.NODE_URL ?? "",
     },
+    testnet: {
+      url: process.env.NODE_URL ?? "",
+    },
   },
   abiExporter: {
     path: "./dist/abis",
