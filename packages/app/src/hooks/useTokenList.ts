@@ -18,9 +18,8 @@ export function useFullTokenList() {
     const [isError, setIsError] = useState(false)
     useEffect(() => {
         setIsLoading(true)
-        fetch(tokenListUrl)
+        fetch(tokenListUrl, {cache: 'force-cache'})
             .then(response => response.json()).then(data => {
-            console.log(data);
             setTokenList(data.tokens)
         }).catch((e) => {
             console.error(e);
