@@ -77,6 +77,22 @@ export const agLink: Token = {
   decimals: 18,
 } as const;
 
+// Base Goerli
+
+export const bgMeow: Token = {
+  symbol: "meow",
+  address: "0x75281fFc939bc0D013964954959793f760342B11",
+  chain: Chain.BaseGoerli,
+  decimals: 18,
+} as const;
+
+export const bgLink: Token = {
+  symbol: "Link",
+  address: "0xd886e2286fd1073df82462ea1822119600af80b6",
+  chain: Chain.BaseGoerli,
+  decimals: 18,
+} as const;
+
 export const tokens = [
   sMeow,
   sLink,
@@ -86,4 +102,6 @@ export const tokens = [
   mLink,
   agMeow,
   agLink,
+  bgMeow,
+  bgLink,
 ];

@@ -196,25 +196,25 @@ Sepolia side receiving CCIP message and sending the filled maker swaps back to F
 
 ![Sepolia receive and send](./docs/bd028a22.svg)
 
-## Polygon Mumbai to Arbitrum Goerli
+## Base Goerli to Arbitrum Goerli
 
 ```sh
 export PRIVATE_KEY=
-export NODE_URL_POLLY=
-export ETHERSCAN_KEY_POLLY=
+export NODE_URL_BASE=
+export ETHERSCAN_KEY_BASE=
 export NODE_URL_ARB=
 export ETHERSCAN_KEY_ARB=
 
-## Polygon Mumbai
+## Base Goerli
 
-export ETHERSCAN_KEY=$ETHERSCAN_KEY_POLLY
-export NODE_URL=$NODE_URL_POLLY
+export ETHERSCAN_KEY=$ETHERSCAN_KEY_BASE
+export NODE_URL=$NODE_URL_BASE
 
 # Deploy the Meow token
-yarn task token-deploy --name meow --symbol meow --decimals 18  --network mumbai
+yarn task token-deploy --name meow --symbol meow --decimals 18  --network baseGoerli
 # Transfer to team
-yarn task token-transfer --token meow --amount 100000  --recipient Dimitri --network mumbai
-yarn task token-transfer --token meow --amount 100000  --recipient Adam --network mumbai
+yarn task token-transfer --token meow --amount 100000  --recipient Dimitri --network baseGoerli
+yarn task token-transfer --token meow --amount 100000  --recipient Adam --network baseGoerli
 
 ## Arbitrum Goerli
 
@@ -236,47 +236,47 @@ yarn task ccs-deploy --network arbitrumGoerli
 # Send the Swapper some Link to pay for CCIP
 yarn task token-transfer --token Link --amount 3 --recipient CrossChainSwapper --network arbitrumGoerli
 
-## Polygon Mumbai
+## Base Goerli
 
-export ETHERSCAN_KEY=$ETHERSCAN_KEY_POLLY
-export NODE_URL=$NODE_URL_POLLY
+export ETHERSCAN_KEY=$ETHERSCAN_KEY_BASE
+export NODE_URL=$NODE_URL_BASE
 
 # Deploy selector library
-yarn task ccs-deploy-lib --network mumbai
+yarn task ccs-deploy-lib --network baseGoerli
 # Deploy the CrossChainSwapper
-yarn task ccs-deploy --network mumbai
+yarn task ccs-deploy --network baseGoerli
 # update CrossChainSwapper address in namedAddress.ts
 
 # Send the Swapper some Link to pay for CCIP
-yarn task token-transfer --token Link --amount 3 --recipient CrossChainSwapper --network mumbai
+yarn task token-transfer --token Link --amount 3 --recipient CrossChainSwapper --network baseGoerli
 # Set the Arbitrum Goerli destination details
-yarn task ccs-dest --chain-id 421613 --network mumbai
+yarn task ccs-dest --chain-id 421613 --network baseGoerli
 
 # Approve the CrossChainSwapper to transfer Meow tokens
-yarn task token-approve --token meow --spender CrossChainSwapper --network mumbai
+yarn task token-approve --token meow --spender CrossChainSwapper --network baseGoerli
 # Deposit Meow tokens into the CrossChainSwapper
-yarn task ccs-deposit --amount 1000 --token meow --network mumbai
+yarn task ccs-deposit --amount 1000 --token meow --network baseGoerli
 
 ## Arbitrum Goerli
 
 export ETHERSCAN_KEY=$ETHERSCAN_KEY_ARB
 export NODE_URL=$NODE_URL_ARB
 
-# Set the Polygon Mumbai destination details
-yarn task ccs-dest --chain-id 80001 --network arbitrumGoerli
+# Set the Base Goerli destination details
+yarn task ccs-dest --chain-id 84531 --network arbitrumGoerli
 
 # Approve the CrossChainSwapper to transfer Meow tokens
 yarn task token-approve --token meow --spender CrossChainSwapper --network arbitrumGoerli
 # Deposit Meow tokens into the CrossChainSwapper
 yarn task ccs-deposit --amount 2000 --token meow --network arbitrumGoerli
 
-## Polygon Mumbai
+## Base Goerli
 
-export ETHERSCAN_KEY=$ETHERSCAN_KEY_POLLY
-export NODE_URL=$NODE_URL_POLLY
+export ETHERSCAN_KEY=$ETHERSCAN_KEY_BASE
+export NODE_URL=$NODE_URL_BASE
 
 # Maker creates a swap
-yarn task ccs-make-swap --amount 990 --token meow --network mumbai
+yarn task ccs-make-swap --amount 990 --token meow --network baseGoerli
 
 ## Arbitrum Goerli
 

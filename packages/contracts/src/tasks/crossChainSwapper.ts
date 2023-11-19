@@ -10,7 +10,7 @@ import { logger } from "../utils/logger";
 import { getSigner } from "../utils/signer";
 import { deployContract, logTxDetails } from "../utils/transaction";
 import { Chain, getChain } from "../utils/network";
-import { agMeow, fMeow, mMeow, sMeow } from "../utils/tokens";
+import { agMeow, bgMeow, fMeow, sMeow } from "../utils/tokens";
 import { resolveName } from "../utils/namedAddress";
 import { resolveAssetToken } from "../utils/resolvers";
 import { parse } from "path";
@@ -68,7 +68,7 @@ subtask("ccs-make-swap", "Maker creates a swap")
 
     log(`About to create swap for ${taskArgs.amount} Meow`);
     const tx = await swapper.makeSwap(
-      chain === Chain.sepolia ? sMeow.address : mMeow.address,
+      chain === Chain.sepolia ? sMeow.address : bgMeow.address,
       chain === Chain.sepolia ? fMeow.address : agMeow.address,
       chain === Chain.sepolia ? Chain.fuji : Chain.arbitrumGoerli,
       rate,
@@ -106,11 +106,10 @@ subtask("ccs-take-swap", "Taker matches a swap")
     );
     const tx = await swapper.takeSwap(
       chain === Chain.fuji ? fMeow.address : agMeow.address,
-      chain === Chain.fuji ? sMeow.address : mMeow.address,
-      chain === Chain.fuji ? Chain.sepolia : Chain.mumbai,
+      chain === Chain.fuji ? sMeow.address : bgMeow.address,
+      chain === Chain.fuji ? Chain.sepolia : Chain.BaseGoerli,
       rate,
-      amountBN,
-      { gasLimit: 1000000 }
+      amountBN
     );
     await logTxDetails(
       tx,
@@ -198,10 +197,10 @@ subtask("ccs-deploy", "Deploys a new Cross Chain Swapper contract").setAction(
           rate: parseEther("1"),
         },
       ];
-    } else if (chain === Chain.mumbai) {
+    } else if (chain === Chain.BaseGoerli) {
       liquidityPools = [
         {
-          sourceToken: mMeow.address,
+          sourceToken: bgMeow.address,
           destinationToken: agMeow.address,
           destinationChainId: Chain.arbitrumGoerli,
           rate: parseEther("1"),
@@ -211,8 +210,8 @@ subtask("ccs-deploy", "Deploys a new Cross Chain Swapper contract").setAction(
       liquidityPools = [
         {
           sourceToken: agMeow.address,
-          destinationToken: mMeow.address,
-          destinationChainId: Chain.mumbai,
+          destinationToken: bgMeow.address,
+          destinationChainId: Chain.BaseGoerli,
           rate: parseEther("1"),
         },
       ];
